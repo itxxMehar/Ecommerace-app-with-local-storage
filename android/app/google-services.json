@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "23802430580",
+    "project_id": "tapnbuy-23592",
+    "storage_bucket": "tapnbuy-23592.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:23802430580:android:305e4c3b31817112563d21",
+        "android_client_info": {
+          "package_name": "com.example.tapnbuy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "23802430580-rjpmh8alf2fjgtpp0pg34m3bs2jgov00.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tapnbuy",
+            "certificate_hash": "193722dab0b0861c42989af60f07a3ec8d934e2f"
+          }
+        },
+        {
+          "client_id": "23802430580-j3a0socp0n7j6p62c7g15leq5m0mdpal.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrXOJCicJpLGwHIb9w3Fkubv7CM8uC6Yo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "23802430580-j3a0socp0n7j6p62c7g15leq5m0mdpal.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
