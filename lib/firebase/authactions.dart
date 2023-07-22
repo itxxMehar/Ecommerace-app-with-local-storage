@@ -7,6 +7,7 @@ import 'package:tapnbuy/screens/seller/dashboard_screen.dart';
 import '../Global/delaytimming.dart';
 import '../Global/sharedPrefrences.dart';
 import '../Global/snackBar.dart';
+import '../screens/buyer/main_dashboard.dart';
 import '../screens/buyer/sellerdashboared.dart';
 import '../src/models/user_model.dart';
 
@@ -108,7 +109,8 @@ class authanication{
       await sharedPrefrences().storeVal("login", "1");
         GlobalSnackBar("Login Successfully!");
       }else if(signUpModels[0].Email ==email &&signUpModels[0].uid==uid&&signUpModels[0].role==0&&usertype==0){
-      delayTiming().pushNewScreen(context, dashboard_screen());
+      delayTiming().pushNewScreen(context, main_dashboard());
+      await sharedPrefrences().storeVal("login", "0");
       GlobalSnackBar("Login Successfully Seller!");
     } else if(signUpModels[0].Password.trim==password.trim ){
       GlobalSnackBar("Passord Incorrect!");

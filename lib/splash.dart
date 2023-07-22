@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tapnbuy/screens/buyer/main_dashboard.dart';
 import 'package:tapnbuy/screens/buyer/sellerdashboared.dart';
+import 'package:tapnbuy/screens/seller/dashboard_screen.dart';
 import 'package:tapnbuy/slider.dart';
 
 import 'Global/delaytimming.dart';
@@ -37,7 +39,15 @@ class _splashState extends State<splash> with TickerProviderStateMixin {
     if(loged=="1"){
       Timer(
         Duration(seconds: 5),
+          // sellerDashboared
             () => delayTiming().pushAndReplecemtNewScreen(context, sellerDashboared()),
+      );
+    }
+    else if(loged=="0")
+    {
+      Timer(
+        Duration(seconds: 5),
+            () => delayTiming().pushAndReplecemtNewScreen(context, main_dashboard()),
       );
     }
     else{

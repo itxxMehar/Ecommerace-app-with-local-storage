@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tapnbuy/screens/authaction/login_tnb.dart';
 import 'package:tapnbuy/src/addtocardcostomer.dart';
 import 'package:tapnbuy/screens/responsive/text.dart';
+import '../../../src/models/user_model.dart';
 import '../add_to_card.dart';
 import '../customernewcollection.dart';
 import '../main_dashboard.dart';
@@ -13,17 +15,42 @@ class drawer extends StatefulWidget {
   State<drawer> createState() => _drawerState();
 }
 class _drawerState extends State<drawer> {
+  List <signUpModel> signUpModels= [];
+  var querySnapshot;
+  bool loading =true;
+  databAse() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    var uid ;
+    final User? user = auth.currentUser;
+    uid = user?.uid;
+    querySnapshot= await FirebaseFirestore.instance.collection("Users").where("uid",isEqualTo: uid)
+        .get();
+    for(int i=0;i<querySnapshot.docs.length;i++){
+      print(querySnapshot);
+      setState(() {
+        signUpModels.add(signUpModel.fromJson(querySnapshot.docs[i].data()));
+        loading=false;
+      });
+    }
+  }
+  @override
+  initState(){
+    databAse();
+    super.initState();
+  }
   @override
   signUserOut(){
     FirebaseAuth.instance.signOut();
   }
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        body: Container(
+    return Scaffold(
+      body: SafeArea(
+        child: Container(
           child: Column(
             children: [
-             SizedBox(height: MediaQuery.of(context).size.height/90,),
+              SizedBox(height: MediaQuery.of(context).size.height/90,),
+              loading==true?
+              Center(child: CircularProgressIndicator(),):
               Row(
                   children: [
 
