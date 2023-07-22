@@ -102,14 +102,14 @@ class authanication{
       for (int i=0;i<querySnapshot.docs.length;i++){
         signUpModels.add(signUpModel.fromJson(querySnapshot.docs[i].data() as Map<String, dynamic> ));
       }
-      if(signUpModels[0].Email ==email &&signUpModels[0].uid==uid&&signUpModels[0].role==1){
+      if(signUpModels[0].Email ==email &&signUpModels[0].uid==uid&&signUpModels[0].role==1&&usertype==1){
       print("1success");
         delayTiming().pushNewScreen(context, sellerDashboared());
       await sharedPrefrences().storeVal("login", "1");
         GlobalSnackBar("Login Successfully!");
-      }else if(signUpModels[0].Email ==email &&signUpModels[0].uid==uid&&signUpModels[0].role==0){
+      }else if(signUpModels[0].Email ==email &&signUpModels[0].uid==uid&&signUpModels[0].role==0&&usertype==0){
       delayTiming().pushNewScreen(context, dashboard_screen());
-      GlobalSnackBar("Login Successfully!");
+      GlobalSnackBar("Login Successfully Seller!");
     } else if(signUpModels[0].Password.trim==password.trim ){
       GlobalSnackBar("Passord Incorrect!");
     }else{

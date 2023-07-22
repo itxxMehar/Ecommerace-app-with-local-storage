@@ -318,7 +318,8 @@ class _signUpState extends State<signUp> {
                             setState(() {
                               redGlobalSnackBar("Empty Address Invalid!");
                             });
-                          } else if (CompanyController.text == null ||
+                          } else if(IdController==1){
+                           if (CompanyController.text == null ||
                               CompanyController.text == "null" ||
                               CompanyController.text == "") {
                             setState(() {
@@ -330,13 +331,15 @@ class _signUpState extends State<signUp> {
                             setState(() {
                               redGlobalSnackBar("Empty Company Number Invalid!");
                             });
+                          }
                           } else if (IdController == null ||
                               IdController == "null" ||
                               IdController == "") {
                             setState(() {
                               redGlobalSnackBar("Invalid Status");
                             });
-                          } else {
+                          }
+                          else {
                             setState(() {
                               progreess=true;
                             });
