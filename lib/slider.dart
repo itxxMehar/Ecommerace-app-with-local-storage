@@ -14,12 +14,6 @@ class slider extends StatefulWidget {
 
 class _sliderState extends State<slider> {
   @override
-  void initState() {
-
-    // TODO: implement initState
-    super.initState();
-  }
-  @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {

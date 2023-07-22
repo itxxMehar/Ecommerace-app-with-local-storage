@@ -2,6 +2,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'package:tapnbuy/screens/seller/drawer/seller_dashboard_drawer.dart';
 import 'package:tapnbuy/screens/responsive/text.dart';
 import 'package:tapnbuy/screens/seller/product/updateproduct.dart';
@@ -19,9 +21,56 @@ class showAllProductSeller extends StatefulWidget {
 
 class _showAllProductSellerState extends State<showAllProductSeller> {
   String id='';
+  SpeechToText _speechToText = SpeechToText();
+  String texts='';
+  bool _speechEnabled = false;
+  String _lastWords = '';
+  void _initSpeech() async {
+    _speechEnabled = await _speechToText.initialize();
+    print(_speechEnabled);
+    setState(() {});
+  }
+  void _startListening() async {
+    focusNode.unfocus();
+    await _speechToText.listen(onResult: _onSpeechResult);
+  }
+  void _stopListening() async {
+    focusNode.hasFocus;
+    await _speechToText.stop();
+  }
+  void _onTextChanged() {
+    String text = _textEditingController.text;
+    final newPosition = text.length;
+    _textEditingController.selection = TextSelection.fromPosition(
+      TextPosition(offset: newPosition),
+    );
+  }
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      _lastWords = result.recognizedWords;
+      _textEditingController.text=_lastWords;
+      ProductRegistrations?.clear();
+      changeSearchValue(_textEditingController.text);
+      _textEditingController.addListener(_onTextChanged);
+    });
+  }
+  changeSearchValue(text){
+    for(int i=0;i<widget.ProductRegistrations!.length;i++){
+     setState(() {
+       if(widget.ProductRegistrations![i].productname.trim().toLowerCase().contains(text.trim().toLowerCase())){
+         ProductRegistrations?.add(widget.ProductRegistrations![i]);
+       }
+     });
+    }
+    print(widget.ProductRegistrations?.length);
+    print(ProductRegistrations?.length);
+    print("ProductRegistrations?.length");
+  }
+  final FocusNode focusNode = FocusNode();
   TextEditingController _textEditingController=TextEditingController();
   bool switchs=false;
-  final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();List <ProductRegistration>? ProductRegistrations= [];
+  final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
+  List <ProductRegistration>? ProductRegistrations= [];
   void initState(){
     // updated();
     ProductRegistrations=widget.ProductRegistrations!=null?widget.ProductRegistrations:[];
@@ -33,56 +82,54 @@ class _showAllProductSellerState extends State<showAllProductSeller> {
     return Scaffold(
       key: _scaffoldkey,
       resizeToAvoidBottomInset: false,
-      appBar: switchs==true?AppBar(
+      appBar: switchs==true? AppBar(
         backgroundColor: Colors.white,
-
-        title: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(30),
-          ),
-          child: TextField(
-              controller: _textEditingController,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                errorBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                contentPadding: EdgeInsets.all(15),
-                prefixIcon: Icon(Icons.search,color: Colors.black,),
-                // hintText: 'Search'
+        title: Row(
+          children: [
+            Flexible(
+              child: TextField(
+                  focusNode: focusNode,
+                  onChanged: (text){
+                    // texts=text.toString().trim().toLowerCase();
+                    setState(() {
+                      ProductRegistrations?.clear();
+                      changeSearchValue(text);
+                    });
+                  },
+                  controller: _textEditingController,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    contentPadding: EdgeInsets.all(15),
+                    prefixIcon: Icon(Icons.search,color: Colors.black,),
+                  ),
+                  autofocus:true
               ),
-              autofocus:true
-          ),
+            ),
+            InkWell(
+                onTap: (){
+                  _speechToText.isNotListening ? _startListening (): _stopListening();},
+                child: const Icon(Icons.mic,color: Colors.black,)),
+          ],
         ),
         leading: IconButton(
           onPressed: (){
-            switchs=false;
+            setState(() {
+              switchs=false;
+            });
           },
-
-
           icon: const Icon(Icons.arrow_back,color: Colors.black,),
         ),
-
         centerTitle: true,
-
-      ):AppBar(
+      ):
+      AppBar(
         backgroundColor: Colors.white,
-
-
         leading: IconButton(
           onPressed: (){
             _scaffoldkey.currentState?.openDrawer();
-            // if (ZoomDrawer.of(context)!.isOpen()){
-            //   ZoomDrawer.of(context)!.close();
-            // }
-            // else{
-            //   ZoomDrawer.of(context)!.open();
-            // }
-
           },
-
-
           icon: const Icon(Icons.menu,color: Colors.black,),
         ),
         centerTitle: true,
@@ -94,15 +141,20 @@ class _showAllProductSellerState extends State<showAllProductSeller> {
                   switchs=true;
                 });
               },
-
               icon:  Icon(Icons.search,color: Colors.black,)
           ),
           Padding(
             padding: const EdgeInsets.only(left: 8.0,right: 16),
-            child: Icon(Icons.shopping_bag_outlined,color: Colors.black,),
+            child: InkWell
+              (onTap: (){
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => product_page(heading:"Add Product",button: "Add Product",)),
+              // );
+            },
+                child: Icon(Icons.shopping_bag_outlined,color: Colors.black,)),
           )
         ],
-
       ),
       drawer: Drawer(
         child:seller_dashboard_drawer(),

@@ -449,22 +449,22 @@ class _updatepageState extends State<updatepage> {
                 child: InkWell(
                   onTap:() {
 
-                    ProductRegistration pUser=ProductRegistration(
-                      productname:productnameController.text.trim(),
-                      category: categoryController.text.trim(),
-                      serisalnumber:serialNumberController.text.trim(),
-                      company:companyController.text.trim(),
-                      price:numberOfProductController.text.trim(),
-                      dispription: discriptionController.text.trim(),
-                      // imageUrl: imageUrl,
-                    );
+                    // ProductRegistration pUser=ProductRegistration(
+                    //   productname:productnameController.text.trim(),
+                    //   category: categoryController.text.trim(),
+                    //   serisalnumber:serialNumberController.text.trim(),
+                    //   company:companyController.text.trim(),
+                    //   price:numberOfProductController.text.trim(),
+                    //   dispription: discriptionController.text.trim(),
+                    //   // imageUrl: imageUrl,
+                    // );
                     // getImage();
                     // print(widget.products);
                     // var collect = FirebaseFirestore.instance.collection('ProductRegistration');
                     // collect
                     //     .doc('widget.products') // <-- Doc ID where data should be updated.
                     //     .update(pUser as Map<Object, Object?>);
-                      updated(pUser,widget.products);
+                    //   updated(pUser,widget.products);
 
                       // createproduct(pUser,context);
 

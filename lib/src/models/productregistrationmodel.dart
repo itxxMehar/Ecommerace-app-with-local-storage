@@ -11,7 +11,7 @@ class ProductRegistration{
   final String company;
   final String dispription;
   final Timestamp ?timeStamp;
-  final List<String>? imageUral;
+  final List<String> imageUral;
   final String? uid;
 
 
@@ -24,7 +24,7 @@ class ProductRegistration{
     required this.price,
     required this.serisalnumber,
     required this.dispription,
-    this.imageUral,
+    required this.imageUral,
     this.timeStamp,
     this.uid
 

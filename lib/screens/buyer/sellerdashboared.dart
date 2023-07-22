@@ -2,12 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'package:tapnbuy/screens/seller/product/product_registration.dart';
 import 'package:tapnbuy/screens/seller/drawer/seller_dashboard_drawer.dart';
 import 'package:tapnbuy/screens/responsive/text.dart';
 import 'package:tapnbuy/src/models/productregistrationmodel.dart';
 import '../seller/product/showAllProductSeller.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
 class sellerDashboared extends StatefulWidget {
   const sellerDashboared({super.key});
 
@@ -16,23 +17,68 @@ class sellerDashboared extends StatefulWidget {
 }
 
 class _sellerDashboaredState extends State<sellerDashboared> {
-  stt.SpeechToText speech = stt.SpeechToText();
-  void startListening() {
-    speech.listen(
-      onResult: (result) {
-        setState(() {
-          // Process the recognized speech result
-          String recognizedText = result.recognizedWords;
-          _textEditingController.text=recognizedText;
-          // Do something with the recognized text
-        });
-      },
-    );
-    speech.stop();
+  SpeechToText _speechToText = SpeechToText();
+  String texts='';
+  bool _speechEnabled = false;
+  String _lastWords = '';
+  void _initSpeech() async {
+    _speechEnabled = await _speechToText.initialize();
+    print(_speechEnabled);
+    setState(() {});
   }
-  void stopListening() {
-    speech.stop();
+  void _startListening() async {
+    focusNode.unfocus();
+    await _speechToText.listen(onResult: _onSpeechResult);
   }
+  void _stopListening() async {
+    focusNode.hasFocus;
+    await _speechToText.stop();
+  }
+  void _onTextChanged() {
+    String text = _textEditingController.text;
+      final newPosition = text.length;
+      _textEditingController.selection = TextSelection.fromPosition(
+        TextPosition(offset: newPosition),
+      );
+  }
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      _lastWords = result.recognizedWords;
+      _textEditingController.text=_lastWords;
+      _textEditingController.addListener(_onTextChanged);
+    });
+  }
+  Stream<QuerySnapshot> _stream = _getInitialStream();
+  static Stream<QuerySnapshot> _getInitialStream() {
+    DateTime lastWeek = DateTime.now().subtract(Duration(days: 7));
+    return FirebaseFirestore.instance
+        .collection("ProductRegistration")
+        .where('timeStamp', isGreaterThanOrEqualTo: lastWeek)
+        .snapshots();
+  }
+  List<ProductRegistration> _filterData(QuerySnapshot snapshot, String query) {
+    print("dfngldf");
+    return snapshot.docs
+        .where((doc) => doc['productname'].toLowerCase().contains(query.toLowerCase()))
+        .map((doc) => ProductRegistration(
+      productname: doc['productname'].toString(),
+      company: doc['company'].toString(),
+      category: doc['category'].toString(),
+      price: doc['price'] ?? 0.0,
+      serisalnumber: doc['serisalnumber'].toString(),
+      dispription: doc['dispription'].toString(),
+      imageUral: List<String>.from(doc['imageUral'] ?? []),
+    ))
+        .toList();
+  }
+  @override
+  void dispose() {
+    _stream.drain();
+    // _stream = null;
+    _textEditingController.dispose();
+    super.dispose();
+  }
+  final FocusNode focusNode = FocusNode();
   String id='';
   int ?a;
   TextEditingController _textEditingController=TextEditingController();
@@ -89,8 +135,19 @@ class _sellerDashboaredState extends State<sellerDashboared> {
       }
     }
   }
+  Stream<QuerySnapshot> _getFilteredStream(String query) {
+    DateTime lastWeek = DateTime.now().subtract(Duration(days: 7));
+    print(lastWeek);
+    final ProductRegistration = FirebaseFirestore.instance.collection("ProductRegistration");
+    ProductRegistration
+        .where('productname', isGreaterThanOrEqualTo: query)
+        .where('productname', isLessThan: query + 'z');
+    ProductRegistration
+        .where('timeStamp', isGreaterThanOrEqualTo: lastWeek);
+    return ProductRegistration.snapshots();
+  }
    initState(){
-    // updated();
+     _initSpeech();
     databAse();
     super.initState();
   }
@@ -127,6 +184,13 @@ class _sellerDashboaredState extends State<sellerDashboared> {
             children: [
               Flexible(
                 child: TextField(
+                  focusNode: focusNode,
+                    onChanged: (text){
+                       // texts=text.toString().trim().toLowerCase();
+                       setState(() {
+                         _stream = _getFilteredStream(text);
+                       });
+                    },
                     controller: _textEditingController,
                     decoration: InputDecoration(
                       border: InputBorder.none,
@@ -135,14 +199,14 @@ class _sellerDashboaredState extends State<sellerDashboared> {
                       focusedBorder: InputBorder.none,
                       contentPadding: EdgeInsets.all(15),
                       prefixIcon: Icon(Icons.search,color: Colors.black,),
-                      // hintText: 'Search'
                     ),
                     autofocus:true
                 ),
               ),
          InkWell(
-             onLongPress: startListening,
-             child: Icon(Icons.mic,color: Colors.black,)),
+             onTap: (){
+               _speechToText.isNotListening ? _startListening (): _stopListening();},
+             child: const Icon(Icons.mic,color: Colors.black,)),
             ],
           ),
           leading: IconButton(
@@ -212,19 +276,21 @@ class _sellerDashboaredState extends State<sellerDashboared> {
                   height: MediaQuery.of(context).size.height/3.7,
                   width:MediaQuery.of(context).size.width/1.1,
                   child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance.collection("ProductRegistration").where('timeStamp', isGreaterThanOrEqualTo: DateTime.now().subtract(Duration(days: 7))).snapshots(),
+                    stream: _stream,
                     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
                       }
 
-                      if (snapshot.connectionState == ConnectionState.waiting) {
+                      else if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
                       }
-                      List<DocumentSnapshot> documents = snapshot.data!.docs;
+                      else{
+                        ProductRegistrations = _filterData(snapshot.data!, _textEditingController.text);
+                      // List<DocumentSnapshot> documents = snapshot.data!.docs;
                       return ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: documents.length,
+                          itemCount: ProductRegistrations.length,
                           itemBuilder: (BuildContext context, int index) {
                             return InkWell(
                               onTap: (){
@@ -255,7 +321,7 @@ class _sellerDashboaredState extends State<sellerDashboared> {
                                                     ),
                                                     height: MediaQuery.of(context).size.height/4.5,
                                                     width: MediaQuery.of(context).size.width/3.1,
-                                                    child: Image.network(documents[index]["imageUral"]!=null?documents[index]["imageUral"]![0]:"",),)
+                                                    child: Image.network(ProductRegistrations[index].imageUral!=null?ProductRegistrations[index].imageUral![0]:"",),)
                                                 ],
                                               ),
                                               // Text('yugkyug')
@@ -273,7 +339,7 @@ class _sellerDashboaredState extends State<sellerDashboared> {
                                             alignment: Alignment.topLeft,
                                             child: Padding(
                                               padding: const EdgeInsets.only(left: 1.0),
-                                              child: Text(documents[index]["productname"]!=null?documents[index]["productname"]:"",
+                                              child: Text(ProductRegistrations[index].productname!=null?ProductRegistrations[index].productname:"",
                                                   style: TextStyle(
                                                     fontSize:35 * MediaQuery.textScaleFactorOf(context),
                                                     fontWeight: FontWeight.w700,
@@ -283,7 +349,7 @@ class _sellerDashboaredState extends State<sellerDashboared> {
                                           ),
                                           Align(
                                             alignment: Alignment.topLeft,
-                                            child: Text(documents[index]["price"]!=null?documents[index]["price"]:"",
+                                            child: Text(ProductRegistrations[index].price!=null?ProductRegistrations[index].price:"",
                                                 style: TextStyle(
                                                     fontSize:30 * MediaQuery.textScaleFactorOf(context),
                                                     fontWeight: FontWeight.w700,
@@ -299,44 +365,45 @@ class _sellerDashboaredState extends State<sellerDashboared> {
                               ),
                             );
 
-                          });
+                          });}
                     },
                   ),
                 ),
                 SizedBox(height:MediaQuery.of(context).size.height*0.01,),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Text('All Products',
+                Container(
+                  width:MediaQuery.of(context).size.width/1.08,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('All Products',
                           style: TextStyle(
                             fontSize:50 * MediaQuery.textScaleFactorOf(context),
                             fontWeight: FontWeight.w700,
                           ),
                           textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
-                    ),
-                    SizedBox(width:MediaQuery.of(context).size.width*0.37,),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: InkWell(
+                      InkWell(
                         onTap: (){
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => showAllProductSeller(ProductRegistrations:ProductRegistrations,)),
                           );
                         },
-                        child: Text('Show all',
-                            style: TextStyle(
-                              fontSize:30 * MediaQuery.textScaleFactorOf(context),
-                              fontWeight: FontWeight.w700,
-                            ),
-                            textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
+                        child: Row(
+                          children: [
+                            Text('Show all',
+                                style: TextStyle(
+                                  fontSize:30 * MediaQuery.textScaleFactorOf(context),
+                                  fontWeight: FontWeight.w700,
+                                ),
+                                textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
+                            Icon(
+                              Icons.navigate_next,
+                              size:23 * MediaQuery.textScaleFactorOf(context),),
+                          ],
+                        ),
                       ),
-                    ),
-                    Icon(
-                      Icons.navigate_next,
-                      size:23 * MediaQuery.textScaleFactorOf(context),),
-                  ],
+                    ],
+                  ),
                 ),
                 SizedBox(height:MediaQuery.of(context).size.height*0.03,),
                 Expanded(
