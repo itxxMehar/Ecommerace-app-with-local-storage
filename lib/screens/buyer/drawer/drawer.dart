@@ -65,14 +65,15 @@ class _drawerState extends State<drawer> {
                       ),
                     ),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Align(
                           alignment: Alignment.topLeft,
                           child: Container(
                             // color: Colors.red,
-                            child: Text('Fazan Anasari',
+                            child: Text(signUpModels[0].Email!=null?signUpModels[0].Email.substring(0,4):"",
                               style: TextStyle(
-                                fontSize:60 * MediaQuery.textScaleFactorOf(context),
+                                fontSize:40 * MediaQuery.textScaleFactorOf(context),
                                 color: Colors.black,
                                 fontWeight: FontWeight.w900,
                               ),
@@ -82,7 +83,7 @@ class _drawerState extends State<drawer> {
                         Align(
                           alignment: Alignment.topLeft,
                           child: Container(
-                            child: Text('fazanansari@gmail.com',
+                            child: Text(signUpModels[0].Email!=null?signUpModels[0].Email:"",
                               style: TextStyle(
                                 fontSize:30 * MediaQuery.textScaleFactorOf(context),
                                 color: Colors.grey,
@@ -95,118 +96,128 @@ class _drawerState extends State<drawer> {
                     ),
                   ],
                 ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.06,),
-             Row(
-               children: [
-                 Padding(
-                   padding: const EdgeInsets.only(left: 35.0),
-                   child: Icon(
-            Icons.home,
-            size:30 * MediaQuery.textScaleFactorOf(context),
-                     color: Colors.grey,),
-                 ),
-                 Padding(
-                   padding: const EdgeInsets.all(16.0),
-                   child: InkWell(
-                     onTap: (){
-                   Navigator.push(
-                   context,
-                   MaterialPageRoute(builder: (context) => main_dashboard()),
-                   );
-                   },
-                     child: Text('Home',style: TextStyle(
-                         fontSize:40 * MediaQuery.textScaleFactorOf(context),
-                       fontWeight: FontWeight.w300
-                     ),
-                         textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
-                   ),
-                 )
-               ],
-             ),
               SizedBox(height: MediaQuery.of(context).size.height*0.02,),
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 35.0),
-                    child: Icon(
-                      Icons.ac_unit_outlined,
-                      size: 30 * MediaQuery.textScaleFactorOf(context),
-                      color: Colors.grey,),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: InkWell(
-                      onTap: (){
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => customernewcollection()),
-                        );
-                      },
-                      child: Text('New Collection',style: TextStyle(
-                          fontSize:40 * MediaQuery.textScaleFactorOf(context),
-                          fontWeight: FontWeight.w300
-                      ),
-                          textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
-                    ),
-                  )
-                ],
-              ),
+             Divider(thickness: 2,),
               SizedBox(height: MediaQuery.of(context).size.height*0.02,),
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 35.0),
-                    child: Icon(
-                      Icons.card_travel,
-                      size: 30 * MediaQuery.textScaleFactorOf(context),
-                      color: Colors.grey,),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: InkWell(
-                      onTap: (){
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => addtocardcustomer()),
-                        );
-                      },
-                      child: Text('Cart',style: TextStyle(
-                          fontSize:40 * MediaQuery.textScaleFactorOf(context),
-                          fontWeight: FontWeight.w300
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width*0.65,
+                      child: Center(
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.home,
+                              size:25 * MediaQuery.textScaleFactorOf(context),
+                              color: Colors.grey,),
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: InkWell(
+                                onTap: (){
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => main_dashboard()),
+                                  );
+                                },
+                                child: Text('Home',style: TextStyle(
+                                    fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                                    fontWeight: FontWeight.w300
+                                ),
+                                    textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
-                          textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
                     ),
-                  )
-                ],
+                    Container(
+                      width: MediaQuery.of(context).size.width*0.65,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.ac_unit_outlined,
+                            size: 25 * MediaQuery.textScaleFactorOf(context),
+                            color: Colors.grey,),
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: InkWell(
+                              onTap: (){
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => customernewcollection()),
+                                );
+                              },
+                              child: Text('New Collection',style: TextStyle(
+                                  fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                                  fontWeight: FontWeight.w300
+                              ),
+                                  textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width*0.65,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.card_travel,
+                            size: 25 * MediaQuery.textScaleFactorOf(context),
+                            color: Colors.grey,),
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: InkWell(
+                              onTap: (){
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => addtocardcustomer()),
+                                );
+                              },
+                              child: Text('Cart',style: TextStyle(
+                                  fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                                  fontWeight: FontWeight.w300
+                              ),
+                                  textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.height*0.47,),
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 35.0),
-                    child: Icon(
+            ),
+              Divider(thickness: 2,),
+              Container(
+                width: MediaQuery.of(context).size.width*0.65,
+                child: Row(
+                  children: [
+                    Icon(
                       Icons.logout,
-                      size: 30 * MediaQuery.textScaleFactorOf(context),
+                      size: 25 * MediaQuery.textScaleFactorOf(context),
                       color: Colors.grey,),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: InkWell(
-                      onTap: () async {
-                       await signUserOut();
-                       Navigator.push(
-                         context,
-                         MaterialPageRoute(builder: (context) => login_tnb()),
-                       );
-                      },
-                      child: Text('Logout',style: TextStyle(
-                          fontSize:40 * MediaQuery.textScaleFactorOf(context),
-                          fontWeight: FontWeight.w300
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: InkWell(
+                        onTap: () async {
+                         await signUserOut();
+                         Navigator.push(
+                           context,
+                           MaterialPageRoute(builder: (context) => login_tnb()),
+                         );
+                        },
+                        child: Text('Logout',style: TextStyle(
+                            fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                            fontWeight: FontWeight.w300
+                        ),
+                            textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
                       ),
-                          textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
             ],
           ),

@@ -12,8 +12,9 @@ import '../../../src/models/productregistrationmodel.dart';
 import '../../buyer/viewproductcostomer.dart';
 import '../dashboard_screen.dart';
 class showAllProductSeller extends StatefulWidget {
+  int ?ide;
   List <ProductRegistration>? ProductRegistrations= [];
-   showAllProductSeller({super.key, this.ProductRegistrations});
+   showAllProductSeller({super.key, this.ProductRegistrations,this.ide});
 
   @override
   State<showAllProductSeller> createState() => _showAllProductSellerState();
@@ -242,82 +243,87 @@ class _showAllProductSellerState extends State<showAllProductSeller> {
                                     ],
                                   ),
                                 ),
-                                SizedBox(width:MediaQuery.of(context).size.width*0.05,),
+                                widget.ide==null?
+                               Row(
+                                 children: [
+                                   SizedBox(width:MediaQuery.of(context).size.width*0.05,),
 
-                                InkWell(
-                                  onTap:() {
-                                    // Navigator.push(
-                                    //   context,
-                                    //   MaterialPageRoute(builder: (context) => add_to_card(product: _product[index])),
-                                    // );
+                                   InkWell(
+                                     onTap:() {
+                                       // Navigator.push(
+                                       //   context,
+                                       //   MaterialPageRoute(builder: (context) => add_to_card(product: _product[index])),
+                                       // );
 
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      borderRadius: BorderRadius.circular(12),
-                                      //   border: Border.all(color: Colors.blue)
-                                    ),
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: Icon(Icons.remove_red_eye,color: Colors.white,),
+                                     },
+                                     child: Container(
+                                       decoration: BoxDecoration(
+                                         color: Colors.black,
+                                         borderRadius: BorderRadius.circular(12),
+                                         //   border: Border.all(color: Colors.blue)
+                                       ),
+                                       child: Center(
+                                         child: Padding(
+                                           padding: const EdgeInsets.all(2.0),
+                                           child: Icon(Icons.remove_red_eye,color: Colors.white,),
 
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width:MediaQuery.of(context).size.width*0.01,),
+                                         ),
+                                       ),
+                                     ),
+                                   ),
+                                   SizedBox(width:MediaQuery.of(context).size.width*0.01,),
 
-                                InkWell(
-                                  onTap:() async {
-                                    //   print(index);
-                                    // updated(index,context);
+                                   InkWell(
+                                     onTap:() async {
+                                       //   print(index);
+                                       // updated(index,context);
 
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      borderRadius: BorderRadius.circular(12),
-                                      //   border: Border.all(color: Colors.blue)
-                                    ),
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: Icon(Icons.edit,color: Colors.white,),
+                                     },
+                                     child: Container(
+                                       decoration: BoxDecoration(
+                                         color: Colors.black,
+                                         borderRadius: BorderRadius.circular(12),
+                                         //   border: Border.all(color: Colors.blue)
+                                       ),
+                                       child: Center(
+                                         child: Padding(
+                                           padding: const EdgeInsets.all(2.0),
+                                           child: Icon(Icons.edit,color: Colors.white,),
 
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width:MediaQuery.of(context).size.width*0.01,),
+                                         ),
+                                       ),
+                                     ),
+                                   ),
+                                   SizedBox(width:MediaQuery.of(context).size.width*0.01,),
 
-                                InkWell (
-                                  onTap:() {
-                                    setState(() {
-                                      // deleted(index);
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => dashboard_screen()),
-                                      );
+                                   InkWell (
+                                     onTap:() {
+                                       setState(() {
+                                         // deleted(index);
+                                         Navigator.push(
+                                           context,
+                                           MaterialPageRoute(builder: (context) => dashboard_screen()),
+                                         );
 
-                                    });
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      borderRadius: BorderRadius.circular(12),
-                                      //   border: Border.all(color: Colors.blue)
-                                    ),
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: Icon(Icons.delete,color: Colors.white,),
+                                       });
+                                     },
+                                     child: Container(
+                                       decoration: BoxDecoration(
+                                         color: Colors.black,
+                                         borderRadius: BorderRadius.circular(12),
+                                         //   border: Border.all(color: Colors.blue)
+                                       ),
+                                       child: Center(
+                                         child: Padding(
+                                           padding: const EdgeInsets.all(2.0),
+                                           child: Icon(Icons.delete,color: Colors.white,),
 
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                         ),
+                                       ),
+                                     ),
+                                   ),
+                                 ],
+                               ):SizedBox()
                               ],
                             ),
                             SizedBox(height:MediaQuery.of(context).size.height*0.01,),

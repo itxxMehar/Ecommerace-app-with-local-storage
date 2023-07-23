@@ -1,10 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'package:tapnbuy/screens/seller/product/showAllProductSeller.dart';
 import 'package:tapnbuy/src/addtocardcostomer.dart';
 import 'package:tapnbuy/screens/responsive/text.dart';
 import 'package:tapnbuy/screens/seller/product/updateproduct.dart';
+import '../../src/models/productregistrationmodel.dart';
+import '../seller/product/product_registration.dart';
 import 'add_to_card.dart';
 import 'drawer/drawer.dart';
 class customernewcollection extends StatefulWidget {
@@ -13,157 +17,194 @@ class customernewcollection extends StatefulWidget {
   State<customernewcollection> createState() => _customernewcollectionState();
 }
 class _customernewcollectionState extends State<customernewcollection> {
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  String id='';
-  bool click=true;
-  int ?a;
 
-
-  void inputData() {
-    final User? user = auth.currentUser;
-    final uid = user?.uid;
-    // here you write the codes to input the data into firestore
+  SpeechToText _speechToText = SpeechToText();
+  String texts='';
+  bool _speechEnabled = false;
+  String _lastWords = '';
+  void _initSpeech() async {
+    _speechEnabled = await _speechToText.initialize();
+    print(_speechEnabled);
+    setState(() {});
   }
-  TextEditingController _textEditingController=TextEditingController();
-  // String? value;
-  bool switchs=false;
-  List _product=[];
-  List va=[];
-  String p='' ;
-  var _firestoreInsance=FirebaseFirestore.instance;
-  final CollectionReference _products=FirebaseFirestore.instance.collection('ProductRegistration');
+  void _startListening() async {
+    focusNode.unfocus();
+    await _speechToText.listen(onResult: _onSpeechResult);
+  }
+  void _stopListening() async {
+    focusNode.hasFocus;
+    await _speechToText.stop();
+  }
+  void _onTextChanged() {
+    String text = _textEditingController.text;
+    final newPosition = text.length;
+    _textEditingController.selection = TextSelection.fromPosition(
+      TextPosition(offset: newPosition),
+    );
+  }
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      _lastWords = result.recognizedWords;
+      _textEditingController.text=_lastWords;
+      _textEditingController.addListener(_onTextChanged);
+    });
+  }
+_filterData( String query) async {
+  ProductRegistrationslatest.clear();
+    DateTime lastWeek = DateTime.now().subtract(Duration(days: 7));
+    List <ProductRegistration> ProductRegistrationslatestssss= [];
+    var data = await FirebaseFirestore.instance.collection("ProductRegistration").where('timeStamp', isGreaterThanOrEqualTo: lastWeek)
+        .get();
+    for(int i=0;i<data.docs.length;i++){
+      ProductRegistrationslatestssss.add(ProductRegistration.fromJson(data.docs[i].data()));
+    }
+    print(ProductRegistrationslatestssss.length);
+    setState(() {
+      for(int i=0;i<ProductRegistrationslatestssss.length;i++) {
+        if (ProductRegistrationslatestssss[i].productname.toLowerCase()
+            .contains(query.toLowerCase())) {
+          setState(() {
+            ProductRegistrationslatest.add(ProductRegistrationslatestssss[i]);
+          });
+        }
+      }
+    });
+    print(ProductRegistrationslatest.length);
 
+  }
+  List<ProductRegistration> _filterDataNot(QuerySnapshot snapshot) {
+    print("dfngldf");
+    return snapshot.docs
+        .map((doc) => ProductRegistration(
+      productname: doc['productname'].toString(),
+      company: doc['company'].toString(),
+      category: doc['category'].toString(),
+      price: doc['price'] ?? 0.0,
+      serisalnumber: doc['serisalnumber'].toString(),
+      dispription: doc['dispription'].toString(),
+      imageUral: List<String>.from(doc['imageUral'] ?? []),
+    ))
+        .toList();
+  }
+  @override
+  void dispose() {
+    // _stream = null;
+    _textEditingController.dispose();
+    super.dispose();
+  }
+  final FocusNode focusNode = FocusNode();
+  String id='';
+  int ?a;
+  TextEditingController _textEditingController=TextEditingController();
+  bool switchs=false;
+  List <ProductRegistration> ProductRegistrationslatest= [];
+  List <ProductRegistration> ProductRegistrationsaLL= [];
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
   fetchProduct()async{
-    QuerySnapshot qn=await _firestoreInsance.collection("ProductRegistration").get();
+    DateTime lastWeek = DateTime.now().subtract(Duration(days: 7));
+    var data = await FirebaseFirestore.instance.collection("ProductRegistration").where('timeStamp', isGreaterThanOrEqualTo: lastWeek)
+        .get();
     setState(() {
-      for (int i=0;i<qn.docs.length;i++){
-        _product.add(
-            {
-              "productname":qn.docs[i]["productname"],
-              "category":qn.docs[i]["category"],
-              "company":qn.docs[i]["company"],
-              "dispription":qn.docs[i]["dispription"],
-              "imageUral":qn.docs[i]["imageUral"],
-              "noofproduct":qn.docs[i]["noofproduct"],
-              "serisalnumber":qn.docs[i]["serisalnumber"],
-
-            }
-        );
+      for(int i=0;i<data.docs.length;i++){
+        setState(() {
+          ProductRegistrationslatest.add(ProductRegistration.fromJson(data.docs[i].data()));
+        });
       }
     });
   }
-  //....................To Update Data into inventory system...................
-
-  updated(index,context) async{
-    var collection = await FirebaseFirestore.instance.collection('ProductRegistration');
-    var querySnapshots = await collection.get();
-    print(querySnapshots.docs.length);
-    for (var snapshot in querySnapshots.docs) {
-
-      var documentID = snapshot.id; // <-- Document ID
-      va.add(documentID);
-    }
-    for(int i=0;i<=va.length;i++){
-
-      if(i==index){
-        // print(va[i]);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => updatepage(products: va[i],)),
-        );
-        return va[i];
+  fetchProductall()async{
+    var data = await FirebaseFirestore.instance.collection("ProductRegistration")
+        .get();
+    setState(() {
+      for(int i=0;i<data.docs.length;i++){
+        setState(() {
+          ProductRegistrationsaLL.add(ProductRegistration.fromJson(data.docs[i].data()));
+        });
       }
-    }
+    });
   }
-  deleted(index) async{
-    var collection = await FirebaseFirestore.instance.collection('ProductRegistration');
-    var querySnapshots = await collection.get();
-    print(querySnapshots.docs.length);
-    for (var snapshot in querySnapshots.docs) {
-
-      var documentID = snapshot.id; // <-- Document ID
-      va.add(documentID);
-    }
-    for(int i=0;i<=va.length;i++){
-
-      if(i==index){
-        // print(va[i]);
-        id=va[i];
-        print(id);
-
-        return await FirebaseFirestore.instance.collection('ProductRegistration').doc(id).delete();
-      }
-    }
-  }
-  void initState(){
-    // updated();
+  @override
+  initState(){
     fetchProduct();
+    fetchProductall();
+    _initSpeech();
+    // databAse();
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        key: _scaffoldkey,
-        resizeToAvoidBottomInset: false,
-        appBar: switchs==true?AppBar(
-          backgroundColor: Colors.white,
-          title: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: TextField(
-                controller: _textEditingController,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  errorBorder: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  contentPadding: EdgeInsets.all(15),
-                  prefixIcon: Icon(Icons.search,color: Colors.black,),
-                  // hintText: 'Search'
-                ),
-                autofocus:true
-            ),
+    return Scaffold(
+      key: _scaffoldkey,
+      resizeToAvoidBottomInset: false,
+      appBar: switchs==true?AppBar(
+        backgroundColor: Colors.white,
+        title: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30),
           ),
-          leading: IconButton(
-            onPressed: (){
-              switchs=false;
+          child: TextField(
+            onChanged: (text) async {
+              _filterData(text);
             },
-            icon: const Icon(Icons.arrow_back,color: Colors.black,),
+              controller: _textEditingController,
+              focusNode: focusNode,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                errorBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                contentPadding: EdgeInsets.all(15),
+                prefixIcon: Icon(Icons.search,color: Colors.black,),
+                suffixIcon: InkWell(
+                    onTap: (){
+                      _speechToText.isNotListening ? _startListening (): _stopListening();},
+                    child: Icon(Icons.mic,color: Colors.black,))
+                // hintText: 'Search'
+              ),
+              autofocus:true
           ),
-          centerTitle: true,
-        ):AppBar(
-          backgroundColor: Colors.white,
-          leading: IconButton(
-            onPressed: (){
-              _scaffoldkey.currentState?.openDrawer();
-            },
-            icon: const Icon(Icons.menu,color: Colors.black,),
+        ),
+        leading: IconButton(
+          onPressed: (){
+           setState(() {
+            switchs=false;
+           });
+          },
+          icon: const Icon(Icons.arrow_back,color: Colors.black,),
+        ),
+        centerTitle: true,
+      ):
+      AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          onPressed: (){
+            _scaffoldkey.currentState?.openDrawer();
+          },
+          icon: const Icon(Icons.menu,color: Colors.black,),
+        ),
+        centerTitle: true,
+        actions: [
+          // Navigate to the Search Screen
+          IconButton(
+              onPressed: (){
+                setState(() {
+                  switchs=true;
+                });
+              },
+              icon:  Icon(Icons.search,color: Colors.black,)
           ),
-          centerTitle: true,
-          actions: [
-            // Navigate to the Search Screen
-            IconButton(
-                onPressed: (){
-                  setState(() {
-                    switchs=true;
-                  });
-                },
-                icon:  Icon(Icons.search,color: Colors.black,)
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0,right: 16),
-              child: Icon(Icons.shopping_bag_outlined,color: Colors.black,),
-            )
-          ],
-        ),
-        drawer: Drawer(
-          child:drawer(),
-        ),
-        body: Container(
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0,right: 16),
+            child: Icon(Icons.shopping_bag_outlined,color: Colors.black,),
+          )
+        ],
+      ),
+      drawer: Drawer(
+        child:drawer(),
+      ),
+      body: SafeArea(
+        child: Container(
           child: Column(
             children: [
               SizedBox(height:MediaQuery.of(context).size.height*0.01,),
@@ -186,7 +227,7 @@ class _customernewcollectionState extends State<customernewcollection> {
                   // color: Colors.black,
                   child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: _product.length,
+                      itemCount: ProductRegistrationslatest.length,
                       itemBuilder: (BuildContext context, int index) {
                         return InkWell(
                           onTap: (){
@@ -218,7 +259,7 @@ class _customernewcollectionState extends State<customernewcollection> {
                                                 ),
                                                 height: MediaQuery.of(context).size.height/4.5,
                                                 width: MediaQuery.of(context).size.width/3.1,
-                                                child: Image.network(_product[index]["imageUral"]),)
+                                                child: Image.network(ProductRegistrationslatest[index].imageUral[0]),)
                                             ],
                                           ),
                                           // Text('yugkyug')
@@ -237,7 +278,7 @@ class _customernewcollectionState extends State<customernewcollection> {
                                         alignment: Alignment.topLeft,
                                         child: Padding(
                                           padding: const EdgeInsets.only(left: 1.0),
-                                          child: Text('${_product[index]["productname"]}',
+                                          child: Text('${ProductRegistrationslatest[index].productname}',
                                               style: TextStyle(
                                                 fontSize:35 * MediaQuery.textScaleFactorOf(context),
                                                 fontWeight: FontWeight.w700,
@@ -247,7 +288,7 @@ class _customernewcollectionState extends State<customernewcollection> {
                                       ),
                                       Align(
                                         alignment: Alignment.topLeft,
-                                        child: Text('${_product[index]["noofproduct"].toString()}',
+                                        child: Text('${ProductRegistrationslatest[index].price.toString()}',
                                             style: TextStyle(
                                                 fontSize:30 * MediaQuery.textScaleFactorOf(context),
                                                 fontWeight: FontWeight.w700,
@@ -284,7 +325,7 @@ class _customernewcollectionState extends State<customernewcollection> {
                       onTap: (){
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => showAllProductSeller()),
+                          MaterialPageRoute(builder: (context) => showAllProductSeller(ProductRegistrations:ProductRegistrationsaLL,ide: 0,)),
                         );
                       },
                       child: Text('Show all',
@@ -301,128 +342,129 @@ class _customernewcollectionState extends State<customernewcollection> {
                 ],
               ),
               SizedBox(height:MediaQuery.of(context).size.height*0.03,),
-              Container(
-                  height: MediaQuery.of(context).size.height/2.3,
-                  width:MediaQuery.of(context).size.width/1.075,
-                  color: Colors.white,
-                  child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: 6,
-                      itemBuilder: (_,index) {
-                        return Column(
-                          children: [
-                            Row(
-                              children: [
-                                SizedBox(width:MediaQuery.of(context).size.width*0.01,),
-                                Container(
-                                  height: MediaQuery.of(context).size.height/9.0,
-                                  width: MediaQuery.of(context).size.width/4.5,
-                                  child: Image.network(_product[index]["imageUral"]
+              Expanded(
+                  child: Container(
+                    width:MediaQuery.of(context).size.width/1.075,
+                    color: Colors.white,
+                    child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: ProductRegistrationsaLL.length,
+                        itemBuilder: (_,index) {
+                          return Column(
+                            children: [
+                              Row(
+                                children: [
+                                  SizedBox(width:MediaQuery.of(context).size.width*0.01,),
+                                  Container(
+                                    height: MediaQuery.of(context).size.height/9.0,
+                                    width: MediaQuery.of(context).size.width/4.5,
+                                    child: Image.network(ProductRegistrationsaLL[index].imageUral[0]
+                                    ),
+
                                   ),
+                                  SizedBox(width:MediaQuery.of(context).size.width*0.01,),
 
-                                ),
-                                SizedBox(width:MediaQuery.of(context).size.width*0.01,),
+                                  Container(
+                                    width:MediaQuery.of(context).size.width/3.1,
+                                    child: Column(
 
-                                Container(
-                                  width:MediaQuery.of(context).size.width/3.1,
-                                  child: Column(
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Text('${ProductRegistrationsaLL[index].productname}',
+                                            style: TextStyle(
+                                              fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                                              fontWeight: FontWeight.w700,
+                                            ),
 
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text('${_product[index]["productname"]}',
-                                          style: TextStyle(
-                                            fontSize:35 * MediaQuery.textScaleFactorOf(context),
-                                            fontWeight: FontWeight.w700,
+                                            textScaleFactor: SizeConfig.textScaleFactor(context,0.7),
+
                                           ),
 
-                                          textScaleFactor: SizeConfig.textScaleFactor(context,0.7),
-
+                                        ),
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Text('${ProductRegistrationsaLL[index].price.toString()}',
+                                              style: TextStyle(
+                                                fontSize:30 * MediaQuery.textScaleFactorOf(context),
+                                                fontWeight: FontWeight.w700,
+                                                color: Colors.grey,
+                                              ),
+                                              textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
                                         ),
 
-                                      ),
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text('${_product[index]["noofproduct"].toString()}',
-                                            style: TextStyle(
-                                              fontSize:30 * MediaQuery.textScaleFactorOf(context),
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.grey,
-                                            ),
-                                            textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
-                                      ),
-
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(width:MediaQuery.of(context).size.width*0.19,),
-
-                                InkWell(
-                                  onTap:() {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => add_to_card(product: _product[index])),
-                                    );
-
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      borderRadius: BorderRadius.circular(12),
-                                      //   border: Border.all(color: Colors.blue)
+                                      ],
                                     ),
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: Icon(Icons.remove_red_eye,color: Colors.white,),
+                                  ),
+                                  SizedBox(width:MediaQuery.of(context).size.width*0.19,),
 
+                                  InkWell(
+                                    onTap:() {
+                                      // Navigator.push(
+                                      //   context,
+                                      //   MaterialPageRoute(builder: (context) => add_to_card(product: _product[index])),
+                                      // );
+
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        borderRadius: BorderRadius.circular(12),
+                                        //   border: Border.all(color: Colors.blue)
+                                      ),
+                                      child: Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(2.0),
+                                          child: Icon(Icons.remove_red_eye,color: Colors.white,),
+
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(width:MediaQuery.of(context).size.width*0.01,),
+                                  SizedBox(width:MediaQuery.of(context).size.width*0.01,),
 
 
-                                InkWell (
+                                  InkWell (
 
-                                  onTap:() {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => addtocardcustomer()),
-                                    );
+                                    onTap:() {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => addtocardcustomer()),
+                                      );
 
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      borderRadius: BorderRadius.circular(12),
-                                      //   border: Border.all(color: Colors.blue)
-                                    ),
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: Icon(Icons.add_shopping_cart,color: Colors.white,),
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        borderRadius: BorderRadius.circular(12),
+                                        //   border: Border.all(color: Colors.blue)
+                                      ),
+                                      child: Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(2.0),
+                                          child: Icon(Icons.add_shopping_cart,color: Colors.white,),
 
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height:MediaQuery.of(context).size.height*0.01,),
+                                ],
+                              ),
+                              SizedBox(height:MediaQuery.of(context).size.height*0.01,),
 
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Container(
-                                width: MediaQuery.of(context).size.width/1.1,
-                                child: Divider(
-                                  thickness: 2,
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width/1.1,
+                                  child: Divider(
+                                    thickness: 2,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        );
-                      })
+                            ],
+                          );
+                        }),
+                  )
               ),
             ],
           ),

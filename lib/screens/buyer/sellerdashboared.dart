@@ -54,8 +54,6 @@ class _sellerDashboaredState extends State<sellerDashboared> {
     var data= FirebaseFirestore.instance
         .collection("ProductRegistration");
     var dat2= data.where('timeStamp', isGreaterThanOrEqualTo: lastWeek);
-
-        // .where('uid',isEqualTo:  FirebaseAuth.instance.currentUser?.uid);
     return dat2.snapshots();
   }
   List<ProductRegistration> _filterData(QuerySnapshot snapshot, String query) {
@@ -103,17 +101,6 @@ class _sellerDashboaredState extends State<sellerDashboared> {
   List va=[];
   List <ProductRegistration> ProductRegistrations= [];
   List <ProductRegistration> ProductRegistrationsaLL= [];
-  // databAse() async {
-  //   ProductRegistrations.clear();
-  //   var querySnapshot= await FirebaseFirestore.instance.collection("ProductRegistration").where('uid',isEqualTo:  FirebaseAuth.instance.currentUser?.uid)
-  //       .get();
-  //   for(int i=0;i<querySnapshot.docs.length;i++){
-  //     print(querySnapshot);
-  //     setState(() {
-  //       ProductRegistrations.add(ProductRegistration.fromJson(querySnapshot.docs[i].data()));
-  //     });
-  //   }
-  // }
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
   idDocument(index,context,data) async{
     var collection = await FirebaseFirestore.instance.collection('ProductRegistration').where('uid',isEqualTo:  FirebaseAuth.instance.currentUser?.uid);
