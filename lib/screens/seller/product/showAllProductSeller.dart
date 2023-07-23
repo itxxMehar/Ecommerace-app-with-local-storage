@@ -54,15 +54,17 @@ class _showAllProductSellerState extends State<showAllProductSeller> {
       _textEditingController.addListener(_onTextChanged);
     });
   }
-  changeSearchValue(text){
-    for(int i=0;i<widget.ProductRegistrations!.length;i++){
-     setState(() {
-       if(widget.ProductRegistrations![i].productname.trim().toLowerCase().contains(text.trim().toLowerCase())){
-         ProductRegistrations?.add(widget.ProductRegistrations![i]);
-       }
-     });
-    }
+  changeSearchValue(text) async {
     print(widget.ProductRegistrations?.length);
+    List <ProductRegistration>? ProductRegistrationss= [];
+    for(int i=0;i<widget.ProductRegistrations!.length;i++){
+       if(widget.ProductRegistrations![i].productname.contains(text)){
+         ProductRegistrationss?.add(widget.ProductRegistrations![i]);
+       }
+    }
+    setState(() {
+      ProductRegistrations=ProductRegistrationss!=null?ProductRegistrationss:[];
+    });
     print(ProductRegistrations?.length);
     print("ProductRegistrations?.length");
   }
@@ -71,9 +73,13 @@ class _showAllProductSellerState extends State<showAllProductSeller> {
   bool switchs=false;
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
   List <ProductRegistration>? ProductRegistrations= [];
+  @override
   void initState(){
     // updated();
-    ProductRegistrations=widget.ProductRegistrations!=null?widget.ProductRegistrations:[];
+    _initSpeech();
+   setState(() {
+     ProductRegistrations=widget.ProductRegistrations!=null?widget.ProductRegistrations:[];
+   });
     super.initState();
   }
 
@@ -92,7 +98,8 @@ class _showAllProductSellerState extends State<showAllProductSeller> {
                   onChanged: (text){
                     // texts=text.toString().trim().toLowerCase();
                     setState(() {
-                      ProductRegistrations?.clear();
+                      // ProductRegistrations?.clear();
+                      print(widget.ProductRegistrations?.length);
                       changeSearchValue(text);
                     });
                   },

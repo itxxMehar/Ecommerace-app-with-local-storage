@@ -51,15 +51,32 @@ class _sellerDashboaredState extends State<sellerDashboared> {
   Stream<QuerySnapshot> _stream = _getInitialStream();
   static Stream<QuerySnapshot> _getInitialStream() {
     DateTime lastWeek = DateTime.now().subtract(Duration(days: 7));
-    return FirebaseFirestore.instance
-        .collection("ProductRegistration")
-        .where('timeStamp', isGreaterThanOrEqualTo: lastWeek)
-        .snapshots();
+    var data= FirebaseFirestore.instance
+        .collection("ProductRegistration");
+    var dat2= data.where('timeStamp', isGreaterThanOrEqualTo: lastWeek);
+
+        // .where('uid',isEqualTo:  FirebaseAuth.instance.currentUser?.uid);
+    return dat2.snapshots();
   }
   List<ProductRegistration> _filterData(QuerySnapshot snapshot, String query) {
     print("dfngldf");
     return snapshot.docs
         .where((doc) => doc['productname'].toLowerCase().contains(query.toLowerCase()))
+        .where((doc) => doc['uid']==FirebaseAuth.instance.currentUser?.uid)
+        .map((doc) => ProductRegistration(
+      productname: doc['productname'].toString(),
+      company: doc['company'].toString(),
+      category: doc['category'].toString(),
+      price: doc['price'] ?? 0.0,
+      serisalnumber: doc['serisalnumber'].toString(),
+      dispription: doc['dispription'].toString(),
+      imageUral: List<String>.from(doc['imageUral'] ?? []),
+    ))
+        .toList();
+  }
+  List<ProductRegistration> _filterDataNot(QuerySnapshot snapshot) {
+    print("dfngldf");
+    return snapshot.docs
         .map((doc) => ProductRegistration(
       productname: doc['productname'].toString(),
       company: doc['company'].toString(),
@@ -85,17 +102,18 @@ class _sellerDashboaredState extends State<sellerDashboared> {
   bool switchs=false;
   List va=[];
   List <ProductRegistration> ProductRegistrations= [];
-  databAse() async {
-    ProductRegistrations.clear();
-    var querySnapshot= await FirebaseFirestore.instance.collection("ProductRegistration").where('uid',isEqualTo:  FirebaseAuth.instance.currentUser?.uid)
-        .get();
-    for(int i=0;i<querySnapshot.docs.length;i++){
-      print(querySnapshot);
-      setState(() {
-        ProductRegistrations.add(ProductRegistration.fromJson(querySnapshot.docs[i].data()));
-      });
-    }
-  }
+  List <ProductRegistration> ProductRegistrationsaLL= [];
+  // databAse() async {
+  //   ProductRegistrations.clear();
+  //   var querySnapshot= await FirebaseFirestore.instance.collection("ProductRegistration").where('uid',isEqualTo:  FirebaseAuth.instance.currentUser?.uid)
+  //       .get();
+  //   for(int i=0;i<querySnapshot.docs.length;i++){
+  //     print(querySnapshot);
+  //     setState(() {
+  //       ProductRegistrations.add(ProductRegistration.fromJson(querySnapshot.docs[i].data()));
+  //     });
+  //   }
+  // }
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
   idDocument(index,context,data) async{
     var collection = await FirebaseFirestore.instance.collection('ProductRegistration').where('uid',isEqualTo:  FirebaseAuth.instance.currentUser?.uid);
@@ -139,16 +157,18 @@ class _sellerDashboaredState extends State<sellerDashboared> {
     DateTime lastWeek = DateTime.now().subtract(Duration(days: 7));
     print(lastWeek);
     final ProductRegistration = FirebaseFirestore.instance.collection("ProductRegistration");
-    ProductRegistration
+   var data1= ProductRegistration.where('uid',isEqualTo:  FirebaseAuth.instance.currentUser?.uid);
+    data1
         .where('productname', isGreaterThanOrEqualTo: query)
         .where('productname', isLessThan: query + 'z');
-    ProductRegistration
+    data1
         .where('timeStamp', isGreaterThanOrEqualTo: lastWeek);
-    return ProductRegistration.snapshots();
+    // data1.where('uid',isEqualTo:  FirebaseAuth.instance.currentUser?.uid);
+    return data1.snapshots();
   }
    initState(){
      _initSpeech();
-    databAse();
+    // databAse();
     super.initState();
   }
   @override
@@ -285,6 +305,9 @@ class _sellerDashboaredState extends State<sellerDashboared> {
                       else if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
                       }
+                      else if (snapshot.hasData==null) {
+                        return Center(child: Text("NO data Found"));
+                      }
                       else{
                         ProductRegistrations = _filterData(snapshot.data!, _textEditingController.text);
                       // List<DocumentSnapshot> documents = snapshot.data!.docs;
@@ -385,7 +408,7 @@ class _sellerDashboaredState extends State<sellerDashboared> {
                         onTap: (){
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => showAllProductSeller(ProductRegistrations:ProductRegistrations,)),
+                            MaterialPageRoute(builder: (context) => showAllProductSeller(ProductRegistrations:ProductRegistrationsaLL,)),
                           );
                         },
                         child: Row(
@@ -419,11 +442,12 @@ class _sellerDashboaredState extends State<sellerDashboared> {
                         if (snapshot.connectionState == ConnectionState.waiting) {
                           return Center(child: CircularProgressIndicator());
                         }
-                        List<DocumentSnapshot> documents = snapshot.data!.docs;
+                        ProductRegistrationsaLL = _filterDataNot(snapshot.data!);
+                        // ProductRegistrationsaLL = snapshot.data!.docs as List<ProductRegistration>;
                         return
                           ListView.builder(
                               scrollDirection: Axis.vertical,
-                              itemCount: documents.length,
+                              itemCount: ProductRegistrationsaLL.length,
                               itemBuilder: (_,index) {
                                 return Column(
                                   children: [
@@ -433,7 +457,7 @@ class _sellerDashboaredState extends State<sellerDashboared> {
                                         Container(
                                           height: MediaQuery.of(context).size.height/9.0,
                                           width: MediaQuery.of(context).size.width/4.5,
-                                       child: Image.network(documents[index]["imageUral"]!=null?documents[index]["imageUral"]![0]:"",),),
+                                       child: Image.network(ProductRegistrationsaLL[index].imageUral!=null?ProductRegistrationsaLL[index].imageUral![0]:"",),),
                                         SizedBox(width:MediaQuery.of(context).size.width*0.01,),
                                         Container(
                                           width:MediaQuery.of(context).size.width/3.1,
@@ -441,7 +465,7 @@ class _sellerDashboaredState extends State<sellerDashboared> {
                                             children: [
                                               Align(
                                                 alignment: Alignment.topLeft,
-                                                child: Text(documents[index]["productname"]!=null?documents[index]["productname"]:"",
+                                                child: Text(ProductRegistrationsaLL[index].productname!=null?ProductRegistrationsaLL[index].productname:"",
                                                   style: TextStyle(
                                                     fontSize:35 * MediaQuery.textScaleFactorOf(context),
                                                     fontWeight: FontWeight.w700,
@@ -451,7 +475,7 @@ class _sellerDashboaredState extends State<sellerDashboared> {
                                               ),
                                               Align(
                                                 alignment: Alignment.topLeft,
-                                                child: Text(documents[index]["price"]!=null?documents[index]["price"]:"",
+                                                child: Text(ProductRegistrationsaLL[index].price!=null?ProductRegistrationsaLL[index].price:"",
                                                     style: TextStyle(
                                                       fontSize:30 * MediaQuery.textScaleFactorOf(context),
                                                       fontWeight: FontWeight.w700,
