@@ -9,6 +9,7 @@ import 'package:tapnbuy/src/models/user_model.dart';
 import '../../../Global/sharedPrefrences.dart';
 import '../../buyer/sellerdashboared.dart';
 import '../dashboard_screen.dart';
+import '../product/ordersSellers.dart';
 class seller_dashboard_drawer extends StatefulWidget {
   const seller_dashboard_drawer({Key? key}) : super(key: key);
 
@@ -65,7 +66,7 @@ class _seller_dashboard_drawerState extends State<seller_dashboard_drawer> {
                         child: CircleAvatar(
                             radius: 30,
                             child:
-                            Image.asset('assets/images/bydefault.PNG')),
+                            Image.asset("assets/images/bydefault.png")),
                       )
                       ,SizedBox(width: 6,),
                       Column(
@@ -159,7 +160,7 @@ class _seller_dashboard_drawerState extends State<seller_dashboard_drawer> {
                  //   ],
                  // ),
 
-                 SizedBox(height: MediaQuery.of(context).size.height*0.02,),
+                 SizedBox(height: MediaQuery.of(context).size.height*0.01,),
 
                  Row(
                    children: [
@@ -180,6 +181,35 @@ class _seller_dashboard_drawerState extends State<seller_dashboard_drawer> {
                            );
                          },
                          child: Text('Add Product',style: TextStyle(
+                             fontSize:40 * MediaQuery.textScaleFactorOf(context),
+                             fontWeight: FontWeight.w300
+                         ),
+                             textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
+                       ),
+                     )
+                   ],
+                 ),
+                 SizedBox(height: MediaQuery.of(context).size.height*0.01,),
+
+                 Row(
+                   children: [
+                     Padding(
+                       padding: const EdgeInsets.only(left: 35.0),
+                       child: Icon(
+                         Icons.bookmark_border,
+                         size: 30 * MediaQuery.textScaleFactorOf(context),
+                         color: Colors.grey,),
+                     ),
+                     Padding(
+                       padding: const EdgeInsets.all(16.0),
+                       child: InkWell(
+                         onTap: (){
+                           Navigator.push(
+                             context,
+                             MaterialPageRoute(builder: (context) => ordersSellers()),
+                           );
+                         },
+                         child: Text('Orders',style: TextStyle(
                              fontSize:40 * MediaQuery.textScaleFactorOf(context),
                              fontWeight: FontWeight.w300
                          ),

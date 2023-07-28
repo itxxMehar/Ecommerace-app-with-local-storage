@@ -7,6 +7,7 @@ import 'package:tapnbuy/screens/seller/product/showAllProductSeller.dart';
 import 'package:tapnbuy/src/addtocardcostomer.dart';
 import 'package:tapnbuy/screens/responsive/text.dart';
 import 'package:tapnbuy/screens/seller/product/updateproduct.dart';
+import '../../firebase/authactions.dart';
 import '../../src/models/productregistrationmodel.dart';
 import '../seller/product/product_registration.dart';
 import 'add_to_card.dart';
@@ -131,6 +132,8 @@ _filterData( String query) async {
     // databAse();
     super.initState();
   }
+  bool progreess=false;
+  int ?inde;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -194,9 +197,17 @@ _filterData( String query) async {
               },
               icon:  Icon(Icons.search,color: Colors.black,)
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0,right: 16),
-            child: Icon(Icons.shopping_bag_outlined,color: Colors.black,),
+          InkWell(
+            onTap: (){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => addtocardcustomer()),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8.0,right: 16),
+              child: Icon(Icons.shopping_bag_outlined,color: Colors.black,),
+            ),
           )
         ],
       ),
@@ -399,11 +410,20 @@ _filterData( String query) async {
                                   SizedBox(width:MediaQuery.of(context).size.width*0.19,),
 
                                   InkWell(
-                                    onTap:() {
-                                      // Navigator.push(
-                                      //   context,
-                                      //   MaterialPageRoute(builder: (context) => add_to_card(product: _product[index])),
-                                      // );
+                                    onTap:() async {
+                                      var Postid=[];
+                                      QuerySnapshot<Map<String, dynamic>>  users =
+                                      await FirebaseFirestore.instance.collection("ProductRegistration")
+                                          .get();
+                                      for (var snapshot in users.docs) {
+                                        // documentID = snapshot.id;
+                                        Postid.add(snapshot.id);
+                                      }
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => add_to_card(ProductRegistrations: ProductRegistrationsaLL[index],ProductRegistrationsNewArrival: ProductRegistrationsaLL
+                                          ,id: Postid[index],)),
+                                      );
 
                                     },
                                     child: Container(
@@ -422,16 +442,31 @@ _filterData( String query) async {
                                     ),
                                   ),
                                   SizedBox(width:MediaQuery.of(context).size.width*0.01,),
-
+                                  progreess==true&&index==inde? Container(
+                                      width:12,
+                                      height:12,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2.0,
+                                      )):
 
                                   InkWell (
-
-                                    onTap:() {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => addtocardcustomer()),
-                                      );
-
+                                    onTap:() async {
+                                      List<String> PostId=[];
+                                      setState(() {
+                                        progreess=true;
+                                        inde=index;
+                                      });
+                                      var data = await FirebaseFirestore.instance.collection("ProductRegistration")
+                                          .get();
+                                      for (var snapshot in data.docs) {
+                                        PostId.add(snapshot.id);
+                                      }
+                                      authanication().whishList(PostId[index]);
+                                      Future.delayed(Duration(milliseconds: 700), () {
+                                        setState(() {
+                                          progreess=false;
+                                        });// Close the snack bar after 3 seconds
+                                      });
                                     },
                                     child: Container(
                                       decoration: BoxDecoration(

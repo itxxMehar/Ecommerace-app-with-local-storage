@@ -364,7 +364,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
                                   onTap:() {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => add_to_card(product: _product[index])),
+                                      MaterialPageRoute(builder: (context) => add_to_card()),
                                     );
                                   },
                                   child: Container(

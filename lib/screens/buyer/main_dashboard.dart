@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+import 'package:tapnbuy/firebase/authactions.dart';
 import 'package:tapnbuy/src/addtocardcostomer.dart';
 import 'package:tapnbuy/screens/responsive/text.dart';
 import 'package:tapnbuy/screens/seller/product/updateproduct.dart';
+import '../../Global/snackBar.dart';
 import '../../src/models/productregistrationmodel.dart';
 import '../seller/product/showAllProductSeller.dart';
 import 'add_to_card.dart';
@@ -65,6 +67,7 @@ class _main_dashboardState extends State<main_dashboard> {
   String p='' ;
   List <ProductRegistration> ProductRegistrationsNewArrival= [];
   List <ProductRegistration> ProductRegistrationsAllSeller= [];
+  List<String> PostId=[];
   fetchProduct()async{
     DateTime lastWeek = DateTime.now().subtract(Duration(days: 7));
     var data = await FirebaseFirestore.instance.collection("ProductRegistration").where('timeStamp', isGreaterThanOrEqualTo: lastWeek)
@@ -75,8 +78,14 @@ class _main_dashboardState extends State<main_dashboard> {
             ProductRegistrationsNewArrival.add(ProductRegistration.fromJson(data.docs[i].data()));
           });
         }
+        for (var snapshot in data.docs) {
+          // documentID = snapshot.id;
+          PostId.add(snapshot.id);
+        }
       });
   }
+  bool progreess=false;
+  int ?inde;
   //....................To Update Data into inventory system...................
 
   updated(index,context) async{
@@ -500,125 +509,163 @@ class _main_dashboardState extends State<main_dashboard> {
                             return Column(
                               children: [
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    SizedBox(width:MediaQuery.of(context).size.width*0.01,),
-                                    Container(
+                                    Row(
+                                      children: [
+                                        SizedBox(width:MediaQuery.of(context).size.width*0.01,),
+                                        Container(
 
 
-                                      height: MediaQuery.of(context).size.height/9.0,
-                                      width: MediaQuery.of(context).size.width/4.5,
-                                      child: Image.network(ProductRegistrationsNewArrival[index].imageUral[0]
-                                      ),
+                                          height: MediaQuery.of(context).size.height/9.0,
+                                          width: MediaQuery.of(context).size.width/4.5,
+                                          child: Image.network(ProductRegistrationsNewArrival[index].imageUral[0]
+                                          ),
 
-                                    ),
-                                    SizedBox(width:MediaQuery.of(context).size.width*0.01,),
+                                        ),
+                                        SizedBox(width:MediaQuery.of(context).size.width*0.01,),
 
-                                    Container(
-                                      width:MediaQuery.of(context).size.width/3.1,
-                                      child: Column(
+                                        Container(
+                                          child: Column(
 
-                                        children: [
-                                          Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Text('${ProductRegistrationsNewArrival[index].productname}',
-                                              style: TextStyle(
-                                                fontSize:35 * MediaQuery.textScaleFactorOf(context),
-                                                fontWeight: FontWeight.w700,
+                                            children: [
+                                              Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Text('${ProductRegistrationsNewArrival[index].productname}',
+                                                  style: TextStyle(
+                                                    fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+
+                                                  textScaleFactor: SizeConfig.textScaleFactor(context,0.7),
+
+                                                ),
+
+                                              ),
+                                              Align(
+                                                alignment: Alignment.topLeft,
+                                                child: Text('${ProductRegistrationsNewArrival[index].price.toString()}',
+                                                    style: TextStyle(
+                                                      fontSize:30 * MediaQuery.textScaleFactorOf(context),
+                                                      fontWeight: FontWeight.w700,
+                                                      color: Colors.grey,
+                                                    ),
+                                                    textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
                                               ),
 
-                                              textScaleFactor: SizeConfig.textScaleFactor(context,0.7),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        InkWell(
+                                          onTap:() async {
+                                            var Postid=[];
+                                            DateTime lastWeek = DateTime.now().subtract(Duration(days: 7));
+                                            QuerySnapshot<Map<String, dynamic>>  users =
+                                            await FirebaseFirestore.instance.collection("ProductRegistration").where('timeStamp', isGreaterThanOrEqualTo: lastWeek)
+                                                .get();
+                                            for (var snapshot in users.docs) {
+                                              // documentID = snapshot.id;
+                                              Postid.add(snapshot.id);
+                                            }
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => add_to_card(ProductRegistrations: ProductRegistrationsNewArrival[index],ProductRegistrationsNewArrival: ProductRegistrationsNewArrival
+                                                ,id: Postid[index],)),
+                                            );
 
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.black,
+                                              borderRadius: BorderRadius.circular(12),
+                                              //   border: Border.all(color: Colors.blue)
                                             ),
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(2.0),
+                                                child: Icon(Icons.remove_red_eye,color: Colors.white,),
 
-                                          ),
-                                          Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Text('${ProductRegistrationsNewArrival[index].price.toString()}',
-                                                style: TextStyle(
-                                                  fontSize:30 * MediaQuery.textScaleFactorOf(context),
-                                                  fontWeight: FontWeight.w700,
-                                                  color: Colors.grey,
-                                                ),
-                                                textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
-                                          ),
-
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(width:MediaQuery.of(context).size.width*0.19,),
-
-                                    InkWell(
-                                      onTap:() {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => add_to_card(product: _product[index])),
-                                        );
-
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius: BorderRadius.circular(12),
-                                          //   border: Border.all(color: Colors.blue)
-                                        ),
-                                        child: Center(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(2.0),
-                                            child: Icon(Icons.remove_red_eye,color: Colors.white,),
-
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                    // SizedBox(width:MediaQuery.of(context).size.width*0.01,),
-                                    //
-                                    // InkWell(
-                                    //   onTap:() async {
-                                    //     //   print(index);
-                                    //     updated(index,context);
-                                    //
-                                    //   },
-                                    //   child: Container(
-                                    //     decoration: BoxDecoration(
-                                    //       color: Colors.black,
-                                    //       borderRadius: BorderRadius.circular(12),
-                                    //       //   border: Border.all(color: Colors.blue)
-                                    //     ),
-                                    //     child: Center(
-                                    //       child: Padding(
-                                    //         padding: const EdgeInsets.all(2.0),
-                                    //         child: Icon(Icons.add_shopping_cart_rounded,color: Colors.white,),
-                                    //
-                                    //       ),
-                                    //     ),
-                                    //   ),
-                                    // ),
-                                    SizedBox(width:MediaQuery.of(context).size.width*0.01,),
+                                        // SizedBox(width:MediaQuery.of(context).size.width*0.01,),
+                                        //
+                                        // InkWell(
+                                        //   onTap:() async {
+                                        //     //   print(index);
+                                        //     updated(index,context);
+                                        //
+                                        //   },
+                                        //   child: Container(
+                                        //     decoration: BoxDecoration(
+                                        //       color: Colors.black,
+                                        //       borderRadius: BorderRadius.circular(12),
+                                        //       //   border: Border.all(color: Colors.blue)
+                                        //     ),
+                                        //     child: Center(
+                                        //       child: Padding(
+                                        //         padding: const EdgeInsets.all(2.0),
+                                        //         child: Icon(Icons.add_shopping_cart_rounded,color: Colors.white,),
+                                        //
+                                        //       ),
+                                        //     ),
+                                        //   ),
+                                        // ),
+                                        SizedBox(width:MediaQuery.of(context).size.width*0.01,),
+                                        progreess==true&&index==inde? Container(
+                                          width:12,
+                                            height:12,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2.0,
+                                            )):
+                                        InkWell (
 
-                                    InkWell (
+                                          onTap:() async {
+                                            // Navigator.push(
+                                            //   context,
+                                            //   MaterialPageRoute(builder: (context) => addtocardcustomer()),
+                                            // );
+                                            setState(() {
+                                              progreess=true;
+                                              inde=index;
+                                            });
+                                            DateTime lastWeek = DateTime.now().subtract(Duration(days: 7));
+                                            var data = await FirebaseFirestore.instance.collection("ProductRegistration").where('timeStamp', isGreaterThanOrEqualTo: lastWeek)
+                                                .get();
+                                              for (var snapshot in data.docs) {
+                                                // documentID = snapshot.id;
+                                                PostId.add(snapshot.id);
+                                              }
+                                            authanication().whishList(PostId[index]);
+                                            Future.delayed(Duration(milliseconds: 700), () {
+                                              setState(() {
+                                                progreess=false;
+                                              });// Close the snack bar after 3 seconds
+                                            });
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.black,
+                                              borderRadius: BorderRadius.circular(12),
+                                              //   border: Border.all(color: Colors.blue)
+                                            ),
+                                            child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(2.0),
+                                                child: Icon(Icons.add_shopping_cart,color: Colors.white,),
 
-                                      onTap:() {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => addtocardcustomer()),
-                                        );
-
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.black,
-                                          borderRadius: BorderRadius.circular(12),
-                                          //   border: Border.all(color: Colors.blue)
-                                        ),
-                                        child: Center(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(2.0),
-                                            child: Icon(Icons.add_shopping_cart,color: Colors.white,),
-
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
+                                      ],
+                                    )
                                   ],
                                 ),
                                 SizedBox(height:MediaQuery.of(context).size.height*0.01,),

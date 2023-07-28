@@ -9,6 +9,7 @@ import '../Global/sharedPrefrences.dart';
 import '../Global/snackBar.dart';
 import '../screens/buyer/main_dashboard.dart';
 import '../screens/buyer/sellerdashboared.dart';
+import '../src/models/orderModel.dart';
 import '../src/models/user_model.dart';
 
 class authanication{
@@ -53,6 +54,29 @@ class authanication{
       GlobalSnackBar("User Register Successfully!");
       delayTiming()
           .pushNewScreen(context, login_tnb());
+    }
+    )
+        .catchError((error) =>  redGlobalSnackBar(error.toString()));
+  }
+  Future placeOrder(OrderModel sign,context) async{
+    final User? user = auth.currentUser;
+    uid = user?.uid;
+    DocumentReference ref =  FirebaseFirestore.instance.collection('Orders').doc();
+    ref.set
+      ({
+      "Email":sign.Email,
+      "FirstName":sign.FirstName,
+      "LastName":sign.LastName,
+      "Adress":sign.Adress,
+      "PhoneNo":sign.PhoneNo,
+      "City":sign.City,
+      "Userid":uid,
+      "Postid":sign.Postid,
+      "posterIdProduct":sign.posterIdProduct,
+    }).then((value) {
+      GlobalSnackBar("Order Successfully!");
+      delayTiming()
+          .backPressed(context);
     }
     )
         .catchError((error) =>  redGlobalSnackBar(error.toString()));
@@ -163,4 +187,60 @@ class authanication{
       // Show an error message to the user
     }
   }
+  void whishList(data) async {
+    final User? user = auth.currentUser;
+    uid = user?.uid;
+    try {
+      // Check if the document exists.
+      DocumentSnapshot snapshot =
+      await FirebaseFirestore.instance.collection('whistList').doc(uid).get();
+
+      if (snapshot.exists) {
+        // Document already exists, update the entries.
+        await FirebaseFirestore.instance.collection('whistList').doc(uid).set(
+          {
+            'uid': uid,
+            'whish':FieldValue.arrayUnion([data]),
+          },
+          SetOptions(merge: true), // Merge with existing data.
+        );
+        GlobalSnackBar('Added to Wish List successfully!');
+      } else {
+        // Document doesn't exist, create a new document with the specified data.
+        await FirebaseFirestore.instance.collection('whistList').doc(uid).set(
+          {
+            'uid': uid,
+          'whish':FieldValue.arrayUnion([data]),
+          },
+        );
+        GlobalSnackBar('Added to Wish List successfully!');
+      }
+    } catch (e) {
+      redGlobalSnackBar('Error Added to Wish List: $e');
+      print('Error creating/updating document: $e');
+    }
+  }
+  void removeFromWhishlist(data) async {
+    print(data);
+    print("doc");
+    final User? user = auth.currentUser;
+    uid = user?.uid;
+    try {
+      // Get the current wishlist document using its ID.
+      DocumentSnapshot snapshot =
+      await FirebaseFirestore.instance.collection('whistList').doc(uid).get();
+
+      if (snapshot.exists) {
+        // Document exists, remove the item from the 'items' array using FieldValue.arrayRemove.
+        await FirebaseFirestore.instance.collection('whistList').doc(uid).update({
+          'whish': FieldValue.arrayRemove([data]),
+        });
+
+        print('Item removed from Firestore successfully!');
+      }
+    }catch (e) {
+      print('Error removing item from wishlist: $e');
+    }
+  }
+
 }

@@ -8,6 +8,7 @@ import '../../../src/models/user_model.dart';
 import '../add_to_card.dart';
 import '../customernewcollection.dart';
 import '../main_dashboard.dart';
+import '../orders.dart';
 class drawer extends StatefulWidget {
   const drawer({Key? key}) : super(key: key);
 
@@ -61,7 +62,7 @@ class _drawerState extends State<drawer> {
                         child: CircleAvatar(
                             radius: 30,
                             child:
-                        Image.asset('assets/images/c.PNG')),
+                            Image.asset("assets/images/bydefault.png")),
                       ),
                     ),
                     Column(
@@ -103,25 +104,56 @@ class _drawerState extends State<drawer> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width*0.65,
-                      child: Center(
+                    InkWell(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => main_dashboard()),
+                        );
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width*0.65,
+                        child: Center(
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.home,
+                                size:25 * MediaQuery.textScaleFactorOf(context),
+                                color: Colors.grey,),
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: InkWell(
+                                  child: Text('Home',style: TextStyle(
+                                      fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                                      fontWeight: FontWeight.w300
+                                  ),
+                                      textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => customernewcollection()),
+                        );
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width*0.65,
                         child: Row(
                           children: [
                             Icon(
-                              Icons.home,
-                              size:25 * MediaQuery.textScaleFactorOf(context),
+                              Icons.ac_unit_outlined,
+                              size: 25 * MediaQuery.textScaleFactorOf(context),
                               color: Colors.grey,),
                             Padding(
                               padding: const EdgeInsets.all(16.0),
                               child: InkWell(
-                                onTap: (){
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => main_dashboard()),
-                                  );
-                                },
-                                child: Text('Home',style: TextStyle(
+                                child: Text('New Collection',style: TextStyle(
                                     fontSize:35 * MediaQuery.textScaleFactorOf(context),
                                     fontWeight: FontWeight.w300
                                 ),
@@ -132,58 +164,62 @@ class _drawerState extends State<drawer> {
                         ),
                       ),
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width*0.65,
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.ac_unit_outlined,
-                            size: 25 * MediaQuery.textScaleFactorOf(context),
-                            color: Colors.grey,),
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: InkWell(
-                              onTap: (){
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => customernewcollection()),
-                                );
-                              },
-                              child: Text('New Collection',style: TextStyle(
-                                  fontSize:35 * MediaQuery.textScaleFactorOf(context),
-                                  fontWeight: FontWeight.w300
+                    InkWell(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => addtocardcustomer()),
+                        );
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width*0.65,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.card_travel,
+                              size: 25 * MediaQuery.textScaleFactorOf(context),
+                              color: Colors.grey,),
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: InkWell(
+                                child: Text('Wish List',style: TextStyle(
+                                    fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                                    fontWeight: FontWeight.w300
+                                ),
+                                    textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
                               ),
-                                  textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
-                            ),
-                          )
-                        ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width*0.65,
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.card_travel,
-                            size: 25 * MediaQuery.textScaleFactorOf(context),
-                            color: Colors.grey,),
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: InkWell(
-                              onTap: (){
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => addtocardcustomer()),
-                                );
-                              },
-                              child: Text('Cart',style: TextStyle(
-                                  fontSize:35 * MediaQuery.textScaleFactorOf(context),
-                                  fontWeight: FontWeight.w300
+                    InkWell(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => OrderList()),
+                        );
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width*0.65,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.bookmark_border,
+                              size: 25 * MediaQuery.textScaleFactorOf(context),
+                              color: Colors.grey,),
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: InkWell(
+                                child: Text('Orders',style: TextStyle(
+                                    fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                                    fontWeight: FontWeight.w300
+                                ),
+                                    textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
                               ),
-                                  textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
-                            ),
-                          )
-                        ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ],
