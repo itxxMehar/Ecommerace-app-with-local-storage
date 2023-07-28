@@ -22,6 +22,7 @@ class _login_tnbState extends State<login_tnb> {
   final emailController=TextEditingController();
   final passwordController=TextEditingController();
   int IdController=1;
+  bool passwordview=false;
   bool loading=false;
   int _value=1;
   var regexEmail = RegExp(
@@ -160,10 +161,16 @@ class _login_tnbState extends State<login_tnb> {
                        SizedBox(height:MediaQuery.of(context).size.height*0.02,),
                        Container(
                          child: TextField(
-                           obscureText: true,
+                           obscureText: passwordview==false?true:false,
                            controller: passwordController,
                            decoration: InputDecoration(
-                             suffixIcon: Icon(Icons.remove_red_eye),
+                             suffixIcon: InkWell(
+                               onTap:(){
+                                 setState(() {
+                                   passwordview=!passwordview;
+                                 });
+                               },
+                                 child: Icon(Icons.remove_red_eye)),
                              hintText: 'Password',
                              hintStyle: TextStyle(color: Colors.grey),
                              isDense: true,
