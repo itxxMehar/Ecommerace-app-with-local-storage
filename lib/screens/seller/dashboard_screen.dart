@@ -205,7 +205,7 @@ class _dashboard_screenState extends State<dashboard_screen> {
                                 });
                               },
                               child: Container(
-                                color:a==index? Colors.red[100] : Colors.white,
+                                // color:a==index? Colors.transparent : Colors.white,
                                 width:MediaQuery.of(context).size.width/2.7,
                                 child: Column(
                                   children: [

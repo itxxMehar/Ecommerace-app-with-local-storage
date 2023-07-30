@@ -400,10 +400,11 @@ class _product_pageState extends State<product_page> {
                               }).toList(),
                             ),
                           ),
+                          widget.button!=""?
                           MultiImagePickerView(
                             controller: controller,
                             padding: const EdgeInsets.all(10),
-                          ),
+                          ):SizedBox()
                         ],
                       ),
                     ),

@@ -332,6 +332,29 @@ class _signUpState extends State<signUp> {
                               redGlobalSnackBar("Empty Company Number Invalid!");
                             });
                           }
+                           else {
+                             setState(() {
+                               progreess=true;
+                             });
+                             final User = signUpModel(
+                               Email: emailController.text.trim(),
+                               Password: passwordController.text.trim(),
+                               PhoneNo: phonNoController.text.trim(),
+                               Adress: AdressController.text.trim(),
+                               Company: CompanyController.text.trim(),
+                               CompenyNumber:
+                               CompanyNumberController.text.trim(),
+                               role: IdController,
+                             );
+                             print(IdController.toString());
+                             print("IdController.toString()");
+                             authanication().signUp(User, context);
+                             Future.delayed(Duration(milliseconds: 400), () {
+                               setState(() {
+                                 progreess=false;
+                               });// Close the snack bar after 3 seconds
+                             });
+                           }
                           } else if (IdController == null ||
                               IdController == "null" ||
                               IdController == "") {

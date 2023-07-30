@@ -313,7 +313,7 @@ class _sellerDashboaredState extends State<sellerDashboared> {
                                 });
                               },
                               child: Container(
-                                color:a==index? Colors.red[100] : Colors.white,
+                                // color:a==index? Colors.red[100] : Colors.white,
                                 width:MediaQuery.of(context).size.width/2.7,
                                 child: Column(
                                   children: [
