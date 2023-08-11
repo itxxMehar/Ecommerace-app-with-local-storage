@@ -251,7 +251,7 @@ _filterData( String query) async {
                             });
                           },
                           child: Container(
-                            color:a==index? Colors.red[100] : Colors.white,
+                            // color:a==index? Colors.red[100] : Colors.white,
                             width:MediaQuery.of(context).size.width/2.7,
                             child: Column(
 
@@ -268,7 +268,7 @@ _filterData( String query) async {
                                                 decoration:BoxDecoration(
                                                   borderRadius: BorderRadius.circular(10),
                                                 ),
-                                                height: MediaQuery.of(context).size.height/4.5,
+                                                // height: MediaQuery.of(context).size.height/4.5,
                                                 width: MediaQuery.of(context).size.width/3.1,
                                                 child: Image.network(ProductRegistrationslatest[index].imageUral[0]),)
                                             ],
@@ -291,7 +291,7 @@ _filterData( String query) async {
                                           padding: const EdgeInsets.only(left: 1.0),
                                           child: Text('${ProductRegistrationslatest[index].productname}',
                                               style: TextStyle(
-                                                fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                                                fontSize:30 * MediaQuery.textScaleFactorOf(context),
                                                 fontWeight: FontWeight.w700,
                                               ),
                                               textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),

@@ -395,7 +395,7 @@ class _sellerDashboaredState extends State<sellerDashboared> {
                         onTap: (){
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => showAllProductSeller(ProductRegistrations:ProductRegistrationsaLL,)),
+                            MaterialPageRoute(builder: (context) => showAllProductSeller(ProductRegistrations:ProductRegistrationsaLL,ide: 10,)),
                           );
                         },
                         child: Row(

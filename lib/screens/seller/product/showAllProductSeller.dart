@@ -8,6 +8,7 @@ import 'package:tapnbuy/screens/seller/drawer/seller_dashboard_drawer.dart';
 import 'package:tapnbuy/screens/responsive/text.dart';
 import 'package:tapnbuy/screens/seller/product/updateproduct.dart';
 
+import '../../../src/addtocardcostomer.dart';
 import '../../../src/models/productregistrationmodel.dart';
 import '../../buyer/viewproductcostomer.dart';
 import '../dashboard_screen.dart';
@@ -151,17 +152,18 @@ class _showAllProductSellerState extends State<showAllProductSeller> {
               },
               icon:  Icon(Icons.search,color: Colors.black,)
           ),
+          widget.ide!=10?
           Padding(
             padding: const EdgeInsets.only(left: 8.0,right: 16),
             child: InkWell
               (onTap: (){
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => product_page(heading:"Add Product",button: "Add Product",)),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => addtocardcustomer()),
+              );
             },
                 child: Icon(Icons.shopping_bag_outlined,color: Colors.black,)),
-          )
+          ):SizedBox()
         ],
       ),
       drawer: Drawer(

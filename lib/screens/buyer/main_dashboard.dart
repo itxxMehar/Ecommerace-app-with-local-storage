@@ -381,7 +381,7 @@ class _main_dashboardState extends State<main_dashboard> {
                                                   decoration:BoxDecoration(
                                                     borderRadius: BorderRadius.circular(10),
                                                   ),
-                                                  height: MediaQuery.of(context).size.height/4.5,
+                                                  // height: MediaQuery.of(context).size.height/7,
                                                   width: MediaQuery.of(context).size.width/3.1,
                                                   child: Image.network(ProductRegistrationsNewArrival[index].imageUral[0]),)
 
@@ -426,7 +426,7 @@ class _main_dashboardState extends State<main_dashboard> {
                                           padding: const EdgeInsets.only(left: 1.0),
                                           child: Text('${ProductRegistrationsNewArrival[index].productname}',
                                               style: TextStyle(
-                                                fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                                                fontSize:30 * MediaQuery.textScaleFactorOf(context),
                                                 fontWeight: FontWeight.w700,
                                               ),
                                               textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),

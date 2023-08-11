@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tapnbuy/screens/responsive/text.dart';
@@ -24,19 +27,34 @@ class _formAdressState extends State<formAdress> {
   final cityController = TextEditingController();
   final lastController = TextEditingController();
   int _value = 1;
+  Timer ?_timer;
+  var _connectivityResult = ConnectivityResult.none;
   var regexEmail = RegExp(
       "^[a-zA-Z0-9.!#%&'+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:'.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)");
   bool progreess = false;
   @override
   void initState() {
     // TODO: implement initState
+    _timer =
+        Timer.periodic(Duration(seconds: 2), (Timer t) => checkConnectivity());
+    Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      setState(() {
+        _connectivityResult = result;
+      });
+    });
     super.initState();
   }
   @override
   void dispose() {
+    _timer?.cancel(); // Cancel the timer when the widget is disposed
     super.dispose();
   }
-
+  checkConnectivity() async{
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    setState(() {
+      _connectivityResult = connectivityResult;
+    });
+  }
   Widget build(BuildContext context) {
     return Scaffold(
       // resizeToAvoidBottomInset: false,
@@ -269,12 +287,17 @@ class _formAdressState extends State<formAdress> {
                         posterIdProduct: widget.PosterId.toString(),
                         Postid: widget.postID.toString()
                       );
+                      if(
+                      _connectivityResult==ConnectivityResult.wifi||_connectivityResult==ConnectivityResult.mobile){
                       authanication().placeOrder(User, context);
                       Future.delayed(Duration(milliseconds: 700), () {
                         setState(() {
                           progreess=false;
                         });// Close the snack bar after 3 seconds
-                      });
+                      });}else{
+                        print("no net");
+                        authanication().noNet(User);
+                      }
                     }
                   },
                   child: Container(

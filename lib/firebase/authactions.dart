@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tapnbuy/screens/authaction/login_tnb.dart';
 import 'package:tapnbuy/screens/seller/dashboard_screen.dart';
 
@@ -80,6 +83,26 @@ class authanication{
     }
     )
         .catchError((error) =>  redGlobalSnackBar(error.toString()));
+  }
+  noNet(newData) async {
+    List <OrderModel> OrderModels= [];
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jsonData = prefs.getString('orderLocxal') ?? '';
+    if(jsonData!=""){
+      List<dynamic> decodedData = jsonDecode(jsonData);
+      OrderModels = decodedData
+          .map((item) => OrderModel.fromJson(Map<String, dynamic>.from(item)))
+          .toList();
+    }
+    OrderModels.add(newData);
+    for(int i=0;i<OrderModels.length;i++) {
+    print(OrderModels[i].LastName);
+    }
+    print(OrderModels.length);
+    List<Map<String, dynamic>> dataListJson =
+    OrderModels.map((order) => order.toJson()).toList();
+    String jsonDatas = jsonEncode(dataListJson);
+    prefs.setString('orderLocxal', jsonDatas);
   }
   google(context,password) async {
     final User? user = auth.currentUser;

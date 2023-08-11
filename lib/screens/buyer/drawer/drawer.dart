@@ -9,6 +9,7 @@ import '../add_to_card.dart';
 import '../customernewcollection.dart';
 import '../main_dashboard.dart';
 import '../orders.dart';
+import '../waitList.dart';
 class drawer extends StatefulWidget {
   const drawer({Key? key}) : super(key: key);
 
@@ -212,6 +213,35 @@ class _drawerState extends State<drawer> {
                               padding: const EdgeInsets.all(16.0),
                               child: InkWell(
                                 child: Text('Orders',style: TextStyle(
+                                    fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                                    fontWeight: FontWeight.w300
+                                ),
+                                    textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => waitList()),
+                        );
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width*0.65,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.waving_hand_outlined,
+                              size: 25 * MediaQuery.textScaleFactorOf(context),
+                              color: Colors.grey,),
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: InkWell(
+                                child: Text('Wait List',style: TextStyle(
                                     fontSize:35 * MediaQuery.textScaleFactorOf(context),
                                     fontWeight: FontWeight.w300
                                 ),
