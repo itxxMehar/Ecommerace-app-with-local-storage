@@ -149,23 +149,23 @@ class _main_dashboardState extends State<main_dashboard> {
               color: Colors.white,
               borderRadius: BorderRadius.circular(30),
             ),
-            child: TextField(
-                controller: _textEditingController,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  errorBorder: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  contentPadding: EdgeInsets.all(15),
-                  prefixIcon: Icon(Icons.search,color: Colors.black,),
-                  // hintText: 'Search'
-                  suffixIcon: InkWell(
-                      onTap: (){
-                        _speechToText.isNotListening ? _startListening (): _stopListening();},
-                      child: Icon(Icons.mic,color: Colors.black,)),
-                ),
-                autofocus:true
-            ),
+            // child: TextField(
+            //     controller: _textEditingController,
+            //     decoration: InputDecoration(
+            //       border: InputBorder.none,
+            //       errorBorder: InputBorder.none,
+            //       enabledBorder: InputBorder.none,
+            //       focusedBorder: InputBorder.none,
+            //       contentPadding: EdgeInsets.all(15),
+            //       prefixIcon: Icon(Icons.search,color: Colors.black,),
+            //       // hintText: 'Search'
+            //       suffixIcon: InkWell(
+            //           onTap: (){
+            //             _speechToText.isNotListening ? _startListening (): _stopListening();},
+            //           child: Icon(Icons.mic,color: Colors.black,)),
+            //     ),
+            //     autofocus:true
+            // ),
           ),
         ),
         leading: IconButton(
@@ -191,15 +191,15 @@ class _main_dashboardState extends State<main_dashboard> {
         ),
         actions: [
           // Navigate to the Search Screen
-          IconButton(
-              onPressed: (){
-                setState(() {
-                  switchs=true;
-                });
-              },
-
-              icon:  Icon(Icons.search,color: Colors.black,)
-          ),
+          // IconButton(
+          //     onPressed: (){
+          //       setState(() {
+          //         switchs=true;
+          //       });
+          //     },
+          //
+          //     icon:  Icon(Icons.search,color: Colors.black,)
+          // ),
           Padding(
             padding: const EdgeInsets.only(left: 8.0,right: 16),
             child: InkWell(

@@ -19,6 +19,7 @@ class _OrderListState extends State<OrderList> {
   List <ProductRegistration> ProductRegistrationsNewArrival= [];
   List <ProductRegistration> ordersLi= [];
   List <OrderModel> OrderModels= [];
+  var documentIds = [];
   fetchProduct()async{
     FirebaseAuth auth = await FirebaseAuth.instance;
     var uid ;
@@ -29,27 +30,30 @@ class _OrderListState extends State<OrderList> {
         .get();
     for(int i=0;i<order.docs.length;i++){
         OrderModels.add(OrderModel.fromJson(order.docs[i].data()));
+        documentIds.add(OrderModels[i].Postid);
     }
     print(OrderModels.length);
     DateTime lastWeek = DateTime.now().subtract(Duration(days: 7));
-    var data = await FirebaseFirestore.instance.collection("ProductRegistration")
+    var data = await FirebaseFirestore.instance.collection("ProductRegistration").where(FieldPath.documentId, whereIn: documentIds)
         .get();
-      for(int i=0;i<data.docs.length;i++){
-          ProductRegistrationsNewArrival.add(ProductRegistration.fromJson(data.docs[i].data()));
-      }
+      // for(int i=0;i<data.docs.length;i++){
+      //     ProductRegistrationsNewArrival.add(ProductRegistration.fromJson(data.docs[i].data()));
+      // }
+    print(data);
     print(ProductRegistrationsNewArrival.length);
       List<String> postId=[];
-    for (var snapshot in data.docs) {
-      // documentID = snapshot.id;
-      postId.add(snapshot.id);
-    }
-    print(postId.length);
-    for(int i=0;i<OrderModels.length;i++){
-      for(int j=0;j<postId.length;j++) {
-        if (OrderModels[i].Postid == postId[j]) {
-        setState(() {
-          ordersLi.add(ProductRegistration.fromJson(data.docs[i].data()));
-        });
+    for(int i=0;i<OrderModels.length;i++) {
+      for (var snapshot in data.docs) {
+        // documentID = snapshot.id;
+        print(snapshot.id);
+        postId.add(snapshot.id);
+        if ( snapshot.id==OrderModels[i].Postid ) {
+          setState(() {
+            print(OrderModels[i].Postid);
+            print(i);
+            ordersLi.add(ProductRegistration.fromJson(data.docs[i].data()));
+            print(ordersLi[i].imageUral);
+          });
         }
       }
     }

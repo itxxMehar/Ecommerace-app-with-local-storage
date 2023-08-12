@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tapnbuy/screens/authaction/login_tnb.dart';
 import 'package:tapnbuy/src/addtocardcostomer.dart';
 import 'package:tapnbuy/screens/responsive/text.dart';
+import '../../../Global/delaytimming.dart';
 import '../../../src/models/user_model.dart';
 import '../add_to_card.dart';
 import '../customernewcollection.dart';
@@ -107,6 +108,8 @@ class _drawerState extends State<drawer> {
                   children: [
                     InkWell(
                       onTap: (){
+                        delayTiming()
+                            .backPressed(context);
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => main_dashboard()),
@@ -138,6 +141,8 @@ class _drawerState extends State<drawer> {
                     ),
                     InkWell(
                       onTap: (){
+                        delayTiming()
+                            .backPressed(context);
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => customernewcollection()),
@@ -167,6 +172,8 @@ class _drawerState extends State<drawer> {
                     ),
                     InkWell(
                       onTap: (){
+                        delayTiming()
+                            .backPressed(context);
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => addtocardcustomer()),
@@ -196,6 +203,8 @@ class _drawerState extends State<drawer> {
                     ),
                     InkWell(
                       onTap: (){
+                        delayTiming()
+                            .backPressed(context);
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => OrderList()),
@@ -225,6 +234,8 @@ class _drawerState extends State<drawer> {
                     ),
                     InkWell(
                       onTap: (){
+                        delayTiming()
+                            .backPressed(context);
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => waitList()),

@@ -21,6 +21,7 @@ class _ordersSellersState extends State<ordersSellers> {
   List <ProductRegistration> ProductRegistrationsNewArrival= [];
   List <ProductRegistration> ordersLi= [];
   List <OrderModel> OrderModels= [];
+  var documentIds = [];
   fetchProduct()async{
     FirebaseAuth auth = await FirebaseAuth.instance;
     var uid ;
@@ -31,10 +32,11 @@ class _ordersSellersState extends State<ordersSellers> {
         .get();
     for(int i=0;i<order.docs.length;i++){
       OrderModels.add(OrderModel.fromJson(order.docs[i].data()));
+      documentIds.add(OrderModels[i].Postid);
+      print(OrderModels[i].Postid);
     }
-    print(OrderModels.length);
-    DateTime lastWeek = DateTime.now().subtract(Duration(days: 7));
-    var data = await FirebaseFirestore.instance.collection("ProductRegistration")
+    print(documentIds.length);
+    var data = await FirebaseFirestore.instance.collection("ProductRegistration").where(FieldPath.documentId, whereIn: documentIds)
         .get();
     for(int i=0;i<data.docs.length;i++){
       ProductRegistrationsNewArrival.add(ProductRegistration.fromJson(data.docs[i].data()));

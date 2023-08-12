@@ -128,6 +128,44 @@ class authanication{
         GlobalSnackBar("No Internet Added to Wait List Successfully!")).onError((error, stackTrace) =>  redGlobalSnackBar('Error in AddIng'))).onError((error, stackTrace) =>
         redGlobalSnackBar('Error in AddIng'));
   }
+  deleteAndRetrieveLocally(int indexToDelete) async {
+    print(indexToDelete);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jsonData = prefs.getString('orderLocxalrealn') ?? '';
+    String jsonDataProductRegistration = prefs.getString('orderProductRegistrationsrealn') ?? '';
+
+    if (jsonData != "" && jsonDataProductRegistration != "") {
+      List<dynamic> decodedData = jsonDecode(jsonData);
+      List<OrderModel> orderModels = decodedData
+          .map((item) => OrderModel.fromJson(Map<String, dynamic>.from(item)))
+          .toList();
+
+      List<dynamic> decodedDataProductRegistration = jsonDecode(jsonDataProductRegistration);
+      List<localStores> localStore = decodedDataProductRegistration
+          .map((item) => localStores.fromJson(Map<String, dynamic>.from(item)))
+          .toList();
+
+      if (indexToDelete >= 0 && indexToDelete < orderModels.length) {
+        OrderModel deletedOrder = orderModels.removeAt(indexToDelete);
+        localStore.removeAt(indexToDelete);
+
+        List<Map<String, dynamic>> dataListJson = orderModels.map((order) => order.toJson()).toList();
+        String jsonDatas = jsonEncode(dataListJson);
+
+        List dataListJsonProductRegistration =
+        localStore.map((store) => store.toJson()).toList();
+        String jsonDatasProductRegistrations = jsonEncode(dataListJsonProductRegistration);
+        print(jsonDatas);
+        print(jsonDatasProductRegistrations);
+        await prefs.setString('orderLocxalrealn', jsonDatas);
+        await prefs.setString('orderProductRegistrationsrealn', jsonDatasProductRegistrations);
+
+      }
+    }
+
+    return null;
+  }
+
   google(context,password) async {
     final User? user = auth.currentUser;
     uid = user?.uid;

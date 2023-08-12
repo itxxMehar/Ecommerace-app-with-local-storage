@@ -10,6 +10,7 @@ import 'package:tapnbuy/screens/seller/product/updateproduct.dart';
 
 import '../../../src/addtocardcostomer.dart';
 import '../../../src/models/productregistrationmodel.dart';
+import '../../buyer/drawer/drawer.dart';
 import '../../buyer/viewproductcostomer.dart';
 import '../dashboard_screen.dart';
 class showAllProductSeller extends StatefulWidget {
@@ -167,7 +168,7 @@ class _showAllProductSellerState extends State<showAllProductSeller> {
         ],
       ),
       drawer: Drawer(
-        child:seller_dashboard_drawer(),
+        child: drawer(),
       ),
       body: Container(
         child: Column(

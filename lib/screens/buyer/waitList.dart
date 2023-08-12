@@ -37,6 +37,7 @@ class _waitListState extends State<waitList> {
   List<dynamic> localStore=[];
   List <ProductRegistration> ProductRegistrations=[];
   Future<void> fetchProduct() async {
+    localStore.clear();
     SharedPreferences prefs = await SharedPreferences.getInstance();
  setState(() {
    String jsonData = prefs.getString('orderLocxalrealn') ?? '';
@@ -52,6 +53,7 @@ class _waitListState extends State<waitList> {
      }
    }
  });
+ print(localStore.length);
   }
   @override
   Widget build(BuildContext context) {
@@ -269,12 +271,14 @@ class _waitListState extends State<waitList> {
                                                       posterIdProduct:  OrderModels[index].posterIdProduct,
                                                       Postid:  OrderModels[index].Postid,
                                                   );
-                                                  authanication().placeOrder(User, context).whenComplete(() =>
+                                                  authanication().placeOrder(User, context).whenComplete(()  async {
+                                                    await authanication().deleteAndRetrieveLocally(index);
+                                                    fetchProduct();
                                                       Future.delayed(Duration(milliseconds: 700), () {
                                                         setState(() {
                                                           progreess=false;
                                                         });// Close the snack bar after 3 seconds
-                                                      }));
+                                                      });});
                                                 },
                                                 child: Container(
                                                   decoration: BoxDecoration(
