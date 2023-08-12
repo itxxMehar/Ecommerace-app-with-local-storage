@@ -5,14 +5,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tapnbuy/screens/authaction/login_tnb.dart';
-import 'package:tapnbuy/screens/seller/dashboard_screen.dart';
 
 import '../Global/delaytimming.dart';
 import '../Global/sharedPrefrences.dart';
 import '../Global/snackBar.dart';
 import '../screens/buyer/main_dashboard.dart';
 import '../screens/buyer/sellerdashboared.dart';
+import '../src/models/localStore.dart';
 import '../src/models/orderModel.dart';
+import '../src/models/productregistrationmodel.dart';
 import '../src/models/user_model.dart';
 
 class authanication{
@@ -84,25 +85,46 @@ class authanication{
     )
         .catchError((error) =>  redGlobalSnackBar(error.toString()));
   }
-  noNet(newData) async {
+  noNet(newData,ProductRegistration ProductRegistrations) async {
+    print(ProductRegistrations);
     List <OrderModel> OrderModels= [];
+    List<localStores> localStore=[];
+    List <ProductRegistration> ProductRegistrationss= [];
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonData = prefs.getString('orderLocxal') ?? '';
+    String jsonData = prefs.getString('orderLocxalrealn') ?? '';
+    String jsonDataProductRegistration = prefs.getString('orderProductRegistrationsrealn') ?? '';
     if(jsonData!=""){
       List<dynamic> decodedData = jsonDecode(jsonData);
       OrderModels = decodedData
           .map((item) => OrderModel.fromJson(Map<String, dynamic>.from(item)))
           .toList();
     }
-    OrderModels.add(newData);
-    for(int i=0;i<OrderModels.length;i++) {
-    print(OrderModels[i].LastName);
+    if(jsonDataProductRegistration!=""){
+      List<dynamic> decodedDataProductRegistration = jsonDecode(jsonDataProductRegistration);
+      localStore = decodedDataProductRegistration
+          .map((item) => localStores.fromJson(Map<String, dynamic>.from(item)))
+          .toList();
     }
-    print(OrderModels.length);
+
+    OrderModels.add(newData);
+    localStores localStoreItem = localStores(
+        productname:ProductRegistrations.productname.toString(),
+        company:ProductRegistrations.company.toString(),
+        category:ProductRegistrations.category.toString(),
+        serisalnumber:ProductRegistrations.serisalnumber.toString(),
+        price:ProductRegistrations.price.toString(),
+        dispription:ProductRegistrations.dispription.toString(),
+        uid:ProductRegistrations.uid.toString(),
+        imageUral: ProductRegistrations.imageUral
+    );
+    localStore.add(localStoreItem);
+    OrderModels.add(newData);
     List<Map<String, dynamic>> dataListJson =
     OrderModels.map((order) => order.toJson()).toList();
     String jsonDatas = jsonEncode(dataListJson);
-    prefs.setString('orderLocxal', jsonDatas);
+    String jsonDatasProductRegistrations = jsonEncode(localStore);
+    prefs.setString('orderLocxalrealn', jsonDatas);
+    prefs.setString('orderProductRegistrationsrealn', jsonDatasProductRegistrations);
   }
   google(context,password) async {
     final User? user = auth.currentUser;

@@ -1,16 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../Global/snackBar.dart';
 import '../../firebase/authactions.dart';
 import '../../src/models/orderModel.dart';
 import '../../src/models/productregistrationmodel.dart';
 import '../responsive/text.dart';
-import 'add_to_card.dart';
 import 'drawer/drawer.dart';
 
 class waitList extends StatefulWidget {
@@ -23,6 +20,7 @@ class waitList extends StatefulWidget {
 class _waitListState extends State<waitList> {
   TextEditingController _textEditingController = TextEditingController();
   bool switchs = false;
+  bool progreess = false;
   final GlobalKey<ScaffoldState> _scaffoldkey = new GlobalKey<ScaffoldState>();
   List <OrderModel> OrderModels= [];
 
@@ -36,17 +34,22 @@ class _waitListState extends State<waitList> {
   void dispose() {
     super.dispose();
   }
-
+  List<dynamic> localStore=[];
+  List <ProductRegistration> ProductRegistrations=[];
   Future<void> fetchProduct() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonData = prefs.getString('orderLocxal') ?? '';
+    String jsonData = prefs.getString('orderLocxalrealn') ?? '';
     if(jsonData!=""){
       List<dynamic> decodedData = jsonDecode(jsonData);
       OrderModels = decodedData
           .map((item) => OrderModel.fromJson(Map<String, dynamic>.from(item)))
           .toList();
+      String jsonDataProductRegistrations = prefs.getString('orderProductRegistrationsrealn') ?? '';
+      if(jsonDataProductRegistrations!=null){
+        var decodedDataProductRegistrations = jsonDecode(jsonDataProductRegistrations);
+        localStore = decodedDataProductRegistrations;
+      }
     }
-
   }
   @override
   Widget build(BuildContext context) {
@@ -145,236 +148,179 @@ class _waitListState extends State<waitList> {
                           context, 0.7)),
                 ),
               ),
-              // Expanded(
-              //     child: Container(
-              //       // height: MediaQuery.of(context).size.height/4.3,
-              //         width: MediaQuery
-              //             .of(context)
-              //             .size
-              //             .width / 1.075,
-              //         child: MediaQuery.removePadding(
-              //             context: context,
-              //             child: Container(
-              //               // height: MediaQuery.of(context).size.height/4.3,
-              //               width: MediaQuery
-              //                   .of(context)
-              //                   .size
-              //                   .width / 1.075,
-              //               child: MediaQuery.removePadding(
-              //                   context: context,
-              //                   child: ListView.builder(
-              //                       scrollDirection: Axis.vertical,
-              //
-              //                       itemCount: _ordersList.length,
-              //                       itemBuilder: (_, index) {
-              //                         return Column(
-              //                           children: [
-              //                             Row(
-              //                               children: [
-              //                                 SizedBox(width: MediaQuery
-              //                                     .of(context)
-              //                                     .size
-              //                                     .width * 0.01,),
-              //                                 Container(
-              //
-              //
-              //                                   height: MediaQuery
-              //                                       .of(context)
-              //                                       .size
-              //                                       .height / 9.0,
-              //                                   width: MediaQuery
-              //                                       .of(context)
-              //                                       .size
-              //                                       .width / 4.5,
-              //                                   child: Image.network(
-              //                                       _ordersList[index].imageUral[0]
-              //                                   ),
-              //
-              //                                 ),
-              //                                 SizedBox(width: MediaQuery
-              //                                     .of(context)
-              //                                     .size
-              //                                     .width * 0.01,),
-              //
-              //                                 Container(
-              //                                   width: MediaQuery
-              //                                       .of(context)
-              //                                       .size
-              //                                       .width / 3.1,
-              //                                   child: Column(
-              //
-              //                                     children: [
-              //                                       Align(
-              //                                         alignment: Alignment
-              //                                             .topLeft,
-              //                                         child: Text(
-              //                                           '${_ordersList[index]
-              //                                               .productname}',
-              //                                           style: TextStyle(
-              //                                             fontSize: 35 *
-              //                                                 MediaQuery
-              //                                                     .textScaleFactorOf(
-              //                                                     context),
-              //                                             fontWeight: FontWeight
-              //                                                 .w700,
-              //                                           ),
-              //
-              //                                           textScaleFactor: SizeConfig
-              //                                               .textScaleFactor(
-              //                                               context, 0.7),
-              //
-              //                                         ),
-              //
-              //                                       ),
-              //                                       Align(
-              //                                         alignment: Alignment
-              //                                             .topLeft,
-              //                                         child: Text(
-              //                                             '${_ordersList[index]
-              //                                                 .price
-              //                                                 .toString()}',
-              //                                             style: TextStyle(
-              //                                               fontSize: 30 *
-              //                                                   MediaQuery
-              //                                                       .textScaleFactorOf(
-              //                                                       context),
-              //                                               fontWeight: FontWeight
-              //                                                   .w700,
-              //                                               color: Colors.grey,
-              //                                             ),
-              //                                             textScaleFactor: SizeConfig
-              //                                                 .textScaleFactor(
-              //                                                 context, 0.7)),
-              //                                       ),
-              //
-              //                                     ],
-              //                                   ),
-              //                                 ),
-              //                                 SizedBox(width: MediaQuery
-              //                                     .of(context)
-              //                                     .size
-              //                                     .width * 0.19,),
-              //                                 InkWell(
-              //                                   onTap: () async {
-              //                                     var Postid = [];
-              //                                     DateTime lastWeek = DateTime
-              //                                         .now().subtract(
-              //                                         Duration(days: 7));
-              //                                     QuerySnapshot<Map<String,
-              //                                         dynamic>> users =
-              //                                     await FirebaseFirestore
-              //                                         .instance.collection(
-              //                                         "ProductRegistration")
-              //                                         .where('timeStamp',
-              //                                         isGreaterThanOrEqualTo: lastWeek)
-              //                                         .get();
-              //                                     for (var snapshot in users
-              //                                         .docs) {
-              //                                       // documentID = snapshot.id;
-              //                                       Postid.add(snapshot.id);
-              //                                     }
-              //                                     Navigator.push(
-              //                                       context,
-              //                                       MaterialPageRoute(
-              //                                           builder: (context) =>
-              //                                               add_to_card(
-              //                                                 ProductRegistrations: _ordersList[index],
-              //                                                 ProductRegistrationsNewArrival: _ordersList
-              //                                                 ,
-              //                                                 id: Postid[index],)),
-              //                                     );
-              //                                   },
-              //                                   child: Container(
-              //                                     decoration: BoxDecoration(
-              //                                       color: Colors.black,
-              //                                       borderRadius: BorderRadius
-              //                                           .circular(12),
-              //                                       //   border: Border.all(color: Colors.blue)
-              //                                     ),
-              //                                     child: Center(
-              //                                       child: Padding(
-              //                                         padding: const EdgeInsets
-              //                                             .all(2.0),
-              //                                         child: Icon(
-              //                                           Icons.remove_red_eye,
-              //                                           color: Colors.white,),
-              //
-              //                                       ),
-              //                                     ),
-              //                                   ),
-              //                                 ),
-              //                                 SizedBox(width: MediaQuery
-              //                                     .of(context)
-              //                                     .size
-              //                                     .width * 0.01,),
-              //                                 InkWell(
-              //                                   onTap: () async {
-              //                                     FirebaseAuth auth = await FirebaseAuth.instance;
-              //                                     var uid ;
-              //                                     var Postid = [],
-              //                                         postId = [];
-              //                                     final User? user = auth.currentUser;
-              //                                     uid = user?.uid;
-              //                                     print(uid);
-              //                                     List<Map<String,dynamic>>OrderModels=[];
-              //                                     var order = await FirebaseFirestore.instance.collection("whistList").where('uid', isEqualTo: uid)
-              //                                         .get();
-              //                                     for (var doc in order.docs) {
-              //                                       Map<String, dynamic> data = doc.data();
-              //                                       OrderModels.add(data);
-              //                                     }
-              //
-              //                                     authanication()
-              //                                         .removeFromWhishlist(
-              //                                         OrderModels[0]["whish"][index]);
-              //                                   },
-              //                                   child: Container(
-              //                                     decoration: BoxDecoration(
-              //                                       color: Colors.black,
-              //                                       borderRadius: BorderRadius
-              //                                           .circular(12),
-              //                                       //   border: Border.all(color: Colors.blue)
-              //                                     ),
-              //                                     child: Center(
-              //                                       child: Padding(
-              //                                         padding: const EdgeInsets
-              //                                             .all(2.0),
-              //                                         child: Icon(Icons.delete,
-              //                                           color: Colors.white,),
-              //
-              //                                       ),
-              //                                     ),
-              //                                   ),
-              //                                 ),
-              //                               ],
-              //                             ),
-              //                             SizedBox(height: MediaQuery
-              //                                 .of(context)
-              //                                 .size
-              //                                 .height * 0.01,),
-              //
-              //                             Align(
-              //                               alignment: Alignment.centerRight,
-              //                               child: Container(
-              //                                 width: MediaQuery
-              //                                     .of(context)
-              //                                     .size
-              //                                     .width / 1.1,
-              //                                 child: Divider(
-              //                                   thickness: 2,
-              //                                 ),
-              //                               ),
-              //                             ),
-              //                           ],
-              //                         );
-              //                       }
-              //                   )
-              //               ),
-              //             )
-              //         )
-              //     )
-              //
-              // )
+              Expanded(
+                  child: Container(
+                    // height: MediaQuery.of(context).size.height/4.3,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width / 1.075,
+                      child: MediaQuery.removePadding(
+                          context: context,
+                          child: Container(
+                            // height: MediaQuery.of(context).size.height/4.3,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width / 1.075,
+                            child: MediaQuery.removePadding(
+                                context: context,
+                                child: ListView.builder(
+                                    scrollDirection: Axis.vertical,
+
+                                    itemCount: localStore.length,
+                                    itemBuilder: (_, index) {
+                                      return Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                      height: MediaQuery
+                                                          .of(context)
+                                                          .size
+                                                          .height / 9.0,
+                                                      width: MediaQuery
+                                                          .of(context)
+                                                          .size
+                                                          .width / 4.5,
+                                                      child: Image.asset("assets/images/nonet.jpg")
+                                                  ),
+                                                  SizedBox(width: MediaQuery
+                                                      .of(context)
+                                                      .size
+                                                      .width * 0.01,),
+
+                                                  Container(
+                                                    width: MediaQuery
+                                                        .of(context)
+                                                        .size
+                                                        .width / 3.1,
+                                                    child: Column(
+
+                                                      children: [
+                                                        Align(
+                                                          alignment: Alignment
+                                                              .topLeft,
+                                                          child: Text(
+                                                            '${localStore[index]
+                                                            ["productname"]}',
+                                                            style: TextStyle(
+                                                              fontSize: 35 *
+                                                                  MediaQuery
+                                                                      .textScaleFactorOf(
+                                                                      context),
+                                                              fontWeight: FontWeight
+                                                                  .w700,
+                                                            ),
+
+                                                            textScaleFactor: SizeConfig
+                                                                .textScaleFactor(
+                                                                context, 0.7),
+
+                                                          ),
+
+                                                        ),
+                                                        Align(
+                                                          alignment: Alignment
+                                                              .topLeft,
+                                                          child: Text(
+                                                              '${localStore[index]
+                                                              ["price"]
+                                                                  .toString()}',
+                                                              style: TextStyle(
+                                                                fontSize: 30 *
+                                                                    MediaQuery
+                                                                        .textScaleFactorOf(
+                                                                        context),
+                                                                fontWeight: FontWeight
+                                                                    .w700,
+                                                                color: Colors.grey,
+                                                              ),
+                                                              textScaleFactor: SizeConfig
+                                                                  .textScaleFactor(
+                                                                  context, 0.7)),
+                                                        ),
+
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              progreess==true? loaderDesign(context):
+                                              InkWell(
+                                                onTap: () async {
+                                                  setState(() {
+                                                    progreess=true;
+                                                  });
+                                                  final User = OrderModel(
+                                                      Email: OrderModels[index].Email,
+                                                      FirstName: OrderModels[index].FirstName,
+                                                      PhoneNo: OrderModels[index].PhoneNo,
+                                                      Adress: OrderModels[index].PhoneNo,
+                                                      LastName:  OrderModels[index].LastName,
+                                                      City:
+                                                      OrderModels[index].City,
+                                                      posterIdProduct:  OrderModels[index].posterIdProduct,
+                                                      Postid:  OrderModels[index].Postid,
+                                                  );
+                                                  authanication().placeOrder(User, context).whenComplete(() =>
+                                                      Future.delayed(Duration(milliseconds: 700), () {
+                                                        setState(() {
+                                                          progreess=false;
+                                                        });// Close the snack bar after 3 seconds
+                                                      }));
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.black,
+                                                    borderRadius: BorderRadius
+                                                        .circular(12),
+                                                    //   border: Border.all(color: Colors.blue)
+                                                  ),
+                                                  child: Center(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                          .all(2.0),
+                                                      child: Icon(Icons.post_add,
+                                                        color: Colors.white,),
+
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: MediaQuery
+                                              .of(context)
+                                              .size
+                                              .height * 0.01,),
+
+                                          Align(
+                                            alignment: Alignment.centerRight,
+                                            child: Container(
+                                              width: MediaQuery
+                                                  .of(context)
+                                                  .size
+                                                  .width / 1.1,
+                                              child: Divider(
+                                                thickness: 2,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                )
+                            ),
+                          )
+                      )
+                  )
+
+              )
             ],
 
           ),

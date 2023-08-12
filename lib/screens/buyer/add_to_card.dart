@@ -148,7 +148,7 @@ fetchData() async {
                     onTap: (){
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => formAdress(postID: widget.id,PosterId: widget.ProductRegistrations?.uid,)),
+                        MaterialPageRoute(builder: (context) => formAdress(postID: widget.id,PosterId: widget.ProductRegistrations?.uid,ProductRegistrations: widget.ProductRegistrations,)),
                       );
                     },
                     child: Padding(

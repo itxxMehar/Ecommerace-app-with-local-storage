@@ -200,7 +200,7 @@ class _addtocardcustomerState extends State<addtocardcustomer> {
                 alignment: Alignment.topLeft,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20),
-                  child: Text('Add To Cart',
+                  child: Text('Add to wish list',
                       style: TextStyle(
                         fontSize: 55 * MediaQuery.textScaleFactorOf(context),
                         fontWeight: FontWeight.w700,

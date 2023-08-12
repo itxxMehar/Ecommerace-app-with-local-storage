@@ -8,12 +8,14 @@ import 'package:tapnbuy/src/models/orderModel.dart';
 
 import '../Global/snackBar.dart';
 import '../firebase/authactions.dart';
+import '../src/models/productregistrationmodel.dart';
 import '../src/models/user_model.dart';
 
 class formAdress extends StatefulWidget {
   String ?postID;
   String ?PosterId;
-   formAdress({super.key,this.postID,this.PosterId});
+  ProductRegistration ?ProductRegistrations;
+   formAdress({super.key,this.postID,this.PosterId,this.ProductRegistrations});
 
   @override
   State<formAdress> createState() => _formAdressState();
@@ -296,7 +298,7 @@ class _formAdressState extends State<formAdress> {
                         });// Close the snack bar after 3 seconds
                       });}else{
                         print("no net");
-                        authanication().noNet(User);
+                        authanication().noNet(User,widget.ProductRegistrations!);
                       }
                     }
                   },
