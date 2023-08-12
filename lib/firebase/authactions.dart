@@ -123,8 +123,10 @@ class authanication{
     OrderModels.map((order) => order.toJson()).toList();
     String jsonDatas = jsonEncode(dataListJson);
     String jsonDatasProductRegistrations = jsonEncode(localStore);
-    prefs.setString('orderLocxalrealn', jsonDatas);
-    prefs.setString('orderProductRegistrationsrealn', jsonDatasProductRegistrations);
+    prefs.setString('orderLocxalrealn', jsonDatas).whenComplete(() =>
+        prefs.setString('orderProductRegistrationsrealn', jsonDatasProductRegistrations).whenComplete(() =>
+        GlobalSnackBar("No Internet Added to Wait List Successfully!")).onError((error, stackTrace) =>  redGlobalSnackBar('Error in AddIng'))).onError((error, stackTrace) =>
+        redGlobalSnackBar('Error in AddIng'));
   }
   google(context,password) async {
     final User? user = auth.currentUser;

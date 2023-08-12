@@ -38,18 +38,20 @@ class _waitListState extends State<waitList> {
   List <ProductRegistration> ProductRegistrations=[];
   Future<void> fetchProduct() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String jsonData = prefs.getString('orderLocxalrealn') ?? '';
-    if(jsonData!=""){
-      List<dynamic> decodedData = jsonDecode(jsonData);
-      OrderModels = decodedData
-          .map((item) => OrderModel.fromJson(Map<String, dynamic>.from(item)))
-          .toList();
-      String jsonDataProductRegistrations = prefs.getString('orderProductRegistrationsrealn') ?? '';
-      if(jsonDataProductRegistrations!=null){
-        var decodedDataProductRegistrations = jsonDecode(jsonDataProductRegistrations);
-        localStore = decodedDataProductRegistrations;
-      }
-    }
+ setState(() {
+   String jsonData = prefs.getString('orderLocxalrealn') ?? '';
+   if(jsonData!=""){
+     List<dynamic> decodedData = jsonDecode(jsonData);
+     OrderModels = decodedData
+         .map((item) => OrderModel.fromJson(Map<String, dynamic>.from(item)))
+         .toList();
+     String jsonDataProductRegistrations = prefs.getString('orderProductRegistrationsrealn') ?? '';
+     if(jsonDataProductRegistrations!=null){
+       var decodedDataProductRegistrations = jsonDecode(jsonDataProductRegistrations);
+       localStore = decodedDataProductRegistrations;
+     }
+   }
+ });
   }
   @override
   Widget build(BuildContext context) {

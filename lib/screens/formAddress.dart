@@ -291,6 +291,7 @@ class _formAdressState extends State<formAdress> {
                       );
                       if(
                       _connectivityResult==ConnectivityResult.wifi||_connectivityResult==ConnectivityResult.mobile){
+                        print("hello");
                       authanication().placeOrder(User, context);
                       Future.delayed(Duration(milliseconds: 700), () {
                         setState(() {
@@ -299,6 +300,11 @@ class _formAdressState extends State<formAdress> {
                       });}else{
                         print("no net");
                         authanication().noNet(User,widget.ProductRegistrations!);
+                        Future.delayed(Duration(milliseconds: 700), () {
+                          setState(() {
+                            progreess=false;
+                          });// Close the snack bar after 3 seconds
+                        });
                       }
                     }
                   },
