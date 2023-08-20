@@ -6,6 +6,7 @@ import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:tapnbuy/screens/seller/drawer/seller_dashboard_drawer.dart';
 import 'package:tapnbuy/screens/responsive/text.dart';
+import 'package:tapnbuy/screens/seller/product/product_registration.dart';
 import 'package:tapnbuy/screens/seller/product/updateproduct.dart';
 
 import '../../../firebase/authactions.dart';
@@ -255,25 +256,52 @@ class _showAllProductSellerState extends State<showAllProductSeller> {
                                    ),
                                  ],
                                ),
-                                widget.ide==null?
                                Row(
                                  children: [
                                    InkWell(
                                      onTap:() async {
-                                       var Postid=[];
-                                       QuerySnapshot<Map<String, dynamic>>  users =
-                                       await FirebaseFirestore.instance.collection("ProductRegistration")
-                                           .get();
-                                       for (var snapshot in users.docs) {
-                                         // documentID = snapshot.id;
-                                         Postid.add(snapshot.id);
+                                       if(widget.ide!=null)
+                                       {
+                                         List va=[];
+                                       var collection = await FirebaseFirestore.instance.collection('ProductRegistration').where('uid',isEqualTo:  FirebaseAuth.instance.currentUser?.uid);
+                                       var querySnapshots = await collection.get();
+                                       print(querySnapshots.docs.length);
+                                       for (var snapshot in querySnapshots.docs) {
+                                         var documentID = snapshot.id; // <-- Document ID
+                                         va.add(documentID);
                                        }
-                                       Navigator.push(
-                                         context,
-                                         MaterialPageRoute(builder: (context) => add_to_card(ProductRegistrations: ProductRegistrations![index],ProductRegistrationsNewArrival: widget.ProductRegistrations
-                                           ,id: Postid[index],)),
-                                       );
+                                       for(int i=0;i<=va.length;i++){
 
+                                         if(i==index){
+                                           // return va[i];
+                                           Navigator.push(
+                                             context,
+                                             MaterialPageRoute(builder: (context) => product_page(idDocument: va[i],productregistration: ProductRegistrations![index],heading:"View Product",button: "",)),
+                                           );
+                                         }
+                                       }}else{
+                                         var Postid = [];
+                                         QuerySnapshot<
+                                             Map<String, dynamic>> users =
+                                         await FirebaseFirestore.instance
+                                             .collection("ProductRegistration")
+                                             .get();
+                                         for (var snapshot in users.docs) {
+                                           // documentID = snapshot.id;
+                                           Postid.add(snapshot.id);
+                                         }
+                                         Navigator.push(
+                                           context,
+                                           MaterialPageRoute(
+                                               builder: (context) =>
+                                                   add_to_card(
+                                                     ProductRegistrations: ProductRegistrations![index],
+                                                     ProductRegistrationsNewArrival: widget
+                                                         .ProductRegistrations
+                                                     ,
+                                                     id: Postid[index],)),
+                                         );
+                                       }
                                      },
                                      child: Container(
                                        decoration: BoxDecoration(
@@ -291,6 +319,7 @@ class _showAllProductSellerState extends State<showAllProductSeller> {
                                      ),
                                    ),
                                    SizedBox(width:MediaQuery.of(context).size.width*0.01,),
+                                   widget.ide==null?
                                    progreess==true&&index==inde? Container(
                                        width:12,
                                        height:12,
@@ -331,10 +360,9 @@ class _showAllProductSellerState extends State<showAllProductSeller> {
                                          ),
                                        ),
                                      ),
-                                   ),
+                                   ):SizedBox(),
                                  ],
                                )
-                                    :SizedBox()
                               ],
                             ),
                             SizedBox(height:MediaQuery.of(context).size.height*0.01,),
