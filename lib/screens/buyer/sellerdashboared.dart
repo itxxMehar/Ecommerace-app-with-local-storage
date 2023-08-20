@@ -459,11 +459,11 @@ class _sellerDashboaredState extends State<sellerDashboared> {
                                               Align(
                                                 alignment: Alignment.topLeft,
                                                 child: Text('${
-                                ProductRegistrations[index].productname!=null&&
-                                ProductRegistrations[index].productname.characters.length>12?
-                                ProductRegistrations[index].productname.substring(0,11):
-                                ProductRegistrations[index].productname!=null?
-                                ProductRegistrations[index].productname:""}',
+                                                    ProductRegistrationsaLL[index].productname!=null&&
+                                                        ProductRegistrationsaLL[index].productname.characters.length>12?
+                                                    ProductRegistrationsaLL[index].productname.substring(0,11):
+                                                    ProductRegistrationsaLL[index].productname!=null?
+                                                    ProductRegistrationsaLL[index].productname:""}',
                                                   style: TextStyle(
                                                     fontSize:35 * MediaQuery.textScaleFactorOf(context),
                                                     fontWeight: FontWeight.w700,

@@ -173,7 +173,8 @@ class _ordersSellersState extends State<ordersSellers> {
                 // height: MediaQuery.of(context).size.height/4.3,
                   width:MediaQuery.of(context).size.width/1.075,
                   color: Colors.white,
-                  child: MediaQuery.removePadding(
+                  child:
+                  OrderModels.length!=0?MediaQuery.removePadding(
                     context: context,
                     child: ListView.builder(
                         scrollDirection: Axis.vertical,
@@ -216,7 +217,7 @@ class _ordersSellersState extends State<ordersSellers> {
                                                 textScaleFactor: SizeConfig.textScaleFactor(context,0.7),),
                                             ),
                                             Expanded(
-                                              child: Text('${OrderModels[index].FirstName+OrderModels[index].LastName}',
+                                              child: Text('${OrderModels[index].FirstName+" "+OrderModels[index].LastName}',
                                                   style: TextStyle(
                                                     fontSize:30 * MediaQuery.textScaleFactorOf(context),
                                                     fontWeight: FontWeight.w700,
@@ -426,6 +427,15 @@ class _ordersSellersState extends State<ordersSellers> {
                             ],
                           );
                         }),
+                  ):Center(
+                    child: Text('No Order',
+                        style: TextStyle(
+                          fontSize:
+                          35 * MediaQuery.textScaleFactorOf(context),
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textScaleFactor:
+                        SizeConfig.textScaleFactor(context, 0.7)),
                   )
 
               ),

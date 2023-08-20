@@ -171,7 +171,7 @@ class _showAllProductSellerState extends State<showAllProductSeller> {
         ],
       ),
       drawer: Drawer(
-        child: drawer(),
+        child: widget.ide==10?seller_dashboard_drawer():drawer(),
       ),
       body: Container(
         child: Column(
