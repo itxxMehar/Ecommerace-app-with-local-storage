@@ -35,6 +35,8 @@ class _ordersSellersState extends State<ordersSellers> {
       documentIds.add(OrderModels[i].Postid);
       print(OrderModels[i].Postid);
     }
+    print("OrderModels.length");
+    print(OrderModels.length);
     print(documentIds.length);
     var data = await FirebaseFirestore.instance.collection("ProductRegistration").where(FieldPath.documentId, whereIn: documentIds)
         .get();
@@ -57,6 +59,7 @@ class _ordersSellersState extends State<ordersSellers> {
         }
       }
     }
+    print("ordersLi.length");
     print(ordersLi.length);
   }
   @override
@@ -194,93 +197,218 @@ class _ordersSellersState extends State<ordersSellers> {
                                   ),
                                   SizedBox(width:MediaQuery.of(context).size.width*0.01,),
 
-                                  Container(
-                                    width:MediaQuery.of(context).size.width/3.1,
+                                  Expanded(
+                                    // width:MediaQuery.of(context).size.width/3.1,
                                     child: Column(
 
                                       children: [
-                                        Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Text('${ordersLi[index].productname}',
-                                            style: TextStyle(
-                                              fontSize:35 * MediaQuery.textScaleFactorOf(context),
-                                              fontWeight: FontWeight.w700,
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Expanded(
+                                              child: Text('Person Name: ',
+                                                style: TextStyle(
+                                                  fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+
+                                                textScaleFactor: SizeConfig.textScaleFactor(context,0.7),),
                                             ),
-
-                                            textScaleFactor: SizeConfig.textScaleFactor(context,0.7),
-
-                                          ),
-
+                                            Expanded(
+                                              child: Text('${OrderModels[index].FirstName+OrderModels[index].LastName}',
+                                                  style: TextStyle(
+                                                    fontSize:30 * MediaQuery.textScaleFactorOf(context),
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
+                                            ),
+                                          ],
                                         ),
-                                        Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Text('${ordersLi[index].price.toString()}',
-                                              style: TextStyle(
-                                                fontSize:30 * MediaQuery.textScaleFactorOf(context),
-                                                fontWeight: FontWeight.w700,
-                                                color: Colors.grey,
-                                              ),
-                                              textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
-                                        ),
+                                        SizedBox(height:MediaQuery.of(context).size.height*0.005,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Expanded(
+                                              child: Text('Email: ',
+                                                style: TextStyle(
+                                                  fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                                                  fontWeight: FontWeight.w700,
+                                                ),
 
+                                                textScaleFactor: SizeConfig.textScaleFactor(context,0.7),),
+                                            ),
+                                            Expanded(
+                                              child: Text('${OrderModels[index].Email}',
+                                                  style: TextStyle(
+                                                    fontSize:30 * MediaQuery.textScaleFactorOf(context),
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height:MediaQuery.of(context).size.height*0.005,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Expanded(
+                                              child: Text('Address: ',
+                                                style: TextStyle(
+                                                  fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+
+                                                textScaleFactor: SizeConfig.textScaleFactor(context,0.7),),
+                                            ),
+                                            Expanded(
+                                              child: Text('${OrderModels[index].Adress+OrderModels[index].Adress}',
+                                                  style: TextStyle(
+                                                    fontSize:30 * MediaQuery.textScaleFactorOf(context),
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height:MediaQuery.of(context).size.height*0.005,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Expanded(
+                                              child: Text('Phone No: ',
+                                                style: TextStyle(
+                                                  fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+
+                                                textScaleFactor: SizeConfig.textScaleFactor(context,0.7),),
+                                            ),
+                                            Expanded(
+                                              child: Text('${OrderModels[index].PhoneNo}',
+                                                  style: TextStyle(
+                                                    fontSize:30 * MediaQuery.textScaleFactorOf(context),
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height:MediaQuery.of(context).size.height*0.005,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Expanded(
+                                              child: Text('Product Name: ',
+                                                style: TextStyle(
+                                                  fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+
+                                                textScaleFactor: SizeConfig.textScaleFactor(context,0.7),),
+                                            ),
+                                            Expanded(
+                                              child: Text('${ordersLi[index].productname}',
+                                                  style: TextStyle(
+                                                    fontSize:30 * MediaQuery.textScaleFactorOf(context),
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height:MediaQuery.of(context).size.height*0.005,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          crossAxisAlignment: CrossAxisAlignment.end,
+                                          children: [
+                                            Expanded(
+                                              child: Text('Price: ',
+                                                style: TextStyle(
+                                                  fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+
+                                                textScaleFactor: SizeConfig.textScaleFactor(context,0.7),),
+                                            ),
+                                            Expanded(
+                                              child: Text('${ordersLi[index].price.toString()}',
+                                                  style: TextStyle(
+                                                    fontSize:30 * MediaQuery.textScaleFactorOf(context),
+                                                    fontWeight: FontWeight.w700,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
+                                            ),
+                                          ],
+                                        ),
                                       ],
                                     ),
                                   ),
-                                  SizedBox(width:MediaQuery.of(context).size.width*0.19,),
-                                  InkWell(
-                                    onTap:() async {
-                                      List<String> va=[];
-                                      var collection = await FirebaseFirestore.instance.collection('ProductRegistration').where('uid',isEqualTo:  FirebaseAuth.instance.currentUser?.uid);
-                                      var querySnapshots = await collection.get();
-                                      print(querySnapshots.docs.length);
-                                      for (var snapshot in querySnapshots.docs) {
-                                        var documentID = snapshot.id; // <-- Document ID
-                                        va.add(documentID);
-                                      }
-                                      for(int i=0;i<=va.length;i++){
-
-                                        if(i==index){
-                                          // return va[i];
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => product_page(idDocument: va[i],productregistration: ordersLi[index],heading:"View Product",button: "",)),
-                                          );
-                                        }
-                                      }
-
-
-                                      // var Postid=[];
-                                      // DateTime lastWeek = DateTime.now().subtract(Duration(days: 7));
-                                      // QuerySnapshot<Map<String, dynamic>>  users =
-                                      // await FirebaseFirestore.instance.collection("ProductRegistration").where('timeStamp', isGreaterThanOrEqualTo: lastWeek)
-                                      //     .get();
-                                      // for (var snapshot in users.docs) {
-                                      //   // documentID = snapshot.id;
-                                      //   Postid.add(snapshot.id);
-                                      // }
-                                      // Navigator.push(
-                                      //   context,
-                                      //   MaterialPageRoute(builder: (context) => add_to_card(ProductRegistrations: ordersLi[index],ProductRegistrationsNewArrival: ordersLi
-                                      //     ,id: Postid[index],)),
-                                      // );
-
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius: BorderRadius.circular(12),
-                                        //   border: Border.all(color: Colors.blue)
-                                      ),
-                                      child: Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(2.0),
-                                          child: Icon(Icons.remove_red_eye,color: Colors.white,),
-
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width:MediaQuery.of(context).size.width*0.01,),
+                                  // SizedBox(width:MediaQuery.of(context).size.width*0.19,),
+                                  // InkWell(
+                                  //   onTap:() async {
+                                  //     // List<String> va=[];
+                                  //     // var collection = await FirebaseFirestore.instance.collection('ProductRegistration').where('uid',isEqualTo:  FirebaseAuth.instance.currentUser?.uid);
+                                  //     // var querySnapshots = await collection.get();
+                                  //     // print(querySnapshots.docs.length);
+                                  //     // for (var snapshot in querySnapshots.docs) {
+                                  //     //   var documentID = snapshot.id; // <-- Document ID
+                                  //     //   va.add(documentID);
+                                  //     // }
+                                  //     // for(int i=0;i<=va.length;i++){
+                                  //     //
+                                  //     //   if(i==index){
+                                  //     //     // return va[i];
+                                  //     //     Navigator.push(
+                                  //     //       context,
+                                  //     //       MaterialPageRoute(builder: (context) => product_page(idDocument: va[i],productregistration: ordersLi[index],heading:"View Product",button: "",)),
+                                  //     //     );
+                                  //     //   }
+                                  //     // }
+                                  //
+                                  //
+                                  //     // var Postid=[];
+                                  //     // DateTime lastWeek = DateTime.now().subtract(Duration(days: 7));
+                                  //     // QuerySnapshot<Map<String, dynamic>>  users =
+                                  //     // await FirebaseFirestore.instance.collection("ProductRegistration").where('timeStamp', isGreaterThanOrEqualTo: lastWeek)
+                                  //     //     .get();
+                                  //     // for (var snapshot in users.docs) {
+                                  //     //   // documentID = snapshot.id;
+                                  //     //   Postid.add(snapshot.id);
+                                  //     // }
+                                  //     // Navigator.push(
+                                  //     //   context,
+                                  //     //   MaterialPageRoute(builder: (context) => add_to_card(ProductRegistrations: ordersLi[index],ProductRegistrationsNewArrival: ordersLi
+                                  //     //     ,id: Postid[index],)),
+                                  //     // );
+                                  //
+                                  //   },
+                                  //   child: Container(
+                                  //     decoration: BoxDecoration(
+                                  //       color: Colors.black,
+                                  //       borderRadius: BorderRadius.circular(12),
+                                  //       //   border: Border.all(color: Colors.blue)
+                                  //     ),
+                                  //     child: Center(
+                                  //       child: Padding(
+                                  //         padding: const EdgeInsets.all(2.0),
+                                  //         child: Icon(Icons.remove_red_eye,color: Colors.white,),
+                                  //
+                                  //       ),
+                                  //     ),
+                                  //   ),
+                                  // ),
+                                  // SizedBox(width:MediaQuery.of(context).size.width*0.01,),
 
                                 ],
                               ),

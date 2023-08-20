@@ -8,10 +8,11 @@ import 'package:tapnbuy/screens/seller/drawer/seller_dashboard_drawer.dart';
 import 'package:tapnbuy/screens/responsive/text.dart';
 import 'package:tapnbuy/screens/seller/product/updateproduct.dart';
 
+import '../../../firebase/authactions.dart';
 import '../../../src/addtocardcostomer.dart';
 import '../../../src/models/productregistrationmodel.dart';
+import '../../buyer/add_to_card.dart';
 import '../../buyer/drawer/drawer.dart';
-import '../../buyer/viewproductcostomer.dart';
 import '../dashboard_screen.dart';
 class showAllProductSeller extends StatefulWidget {
   int ?ide;
@@ -24,6 +25,8 @@ class showAllProductSeller extends StatefulWidget {
 
 class _showAllProductSellerState extends State<showAllProductSeller> {
   String id='';
+  bool progreess=false;
+  int ?inde;
   SpeechToText _speechToText = SpeechToText();
   String texts='';
   bool _speechEnabled = false;
@@ -201,62 +204,75 @@ class _showAllProductSellerState extends State<showAllProductSeller> {
                         return Column(
                           children: [
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                SizedBox(width:MediaQuery.of(context).size.width*0.01,),
-                                Container(
+                               Row(
+                                 children: [
+                                   SizedBox(width:MediaQuery.of(context).size.width*0.01,),
+                                   Container(
 
 
-                                  height: MediaQuery.of(context).size.height/9.0,
-                                  width: MediaQuery.of(context).size.width/4.5,
-                                  child: Image.network(ProductRegistrations?[index].imageUral!=null?ProductRegistrations![index].imageUral![0]:"",
-                                  ),
+                                     height: MediaQuery.of(context).size.height/9.0,
+                                     width: MediaQuery.of(context).size.width/4.5,
+                                     child: Image.network(ProductRegistrations?[index].imageUral!=null?ProductRegistrations![index].imageUral![0]:"",
+                                     ),
 
-                                ),
-                                SizedBox(width:MediaQuery.of(context).size.width*0.01,),
+                                   ),
+                                   SizedBox(width:MediaQuery.of(context).size.width*0.01,),
 
-                                Container(
-                                  width:MediaQuery.of(context).size.width/3.1,
-                                  child: Column(
+                                   Container(
+                                     child: Column(
+                                       mainAxisAlignment: MainAxisAlignment.start,
+                                       crossAxisAlignment: CrossAxisAlignment.start,
+                                       children: [
+                                         Align(
+                                           alignment: Alignment.topLeft,
+                                           child: Text(ProductRegistrations?[index].productname!=null?ProductRegistrations![index].productname:"",
+                                             style: TextStyle(
+                                               fontSize:35 * MediaQuery.textScaleFactorOf(context),
+                                               fontWeight: FontWeight.w700,
+                                             ),
 
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(ProductRegistrations?[index].productname!=null?ProductRegistrations![index].productname:"",
-                                          style: TextStyle(
-                                            fontSize:35 * MediaQuery.textScaleFactorOf(context),
-                                            fontWeight: FontWeight.w700,
-                                          ),
+                                             textScaleFactor: SizeConfig.textScaleFactor(context,0.7),
 
-                                          textScaleFactor: SizeConfig.textScaleFactor(context,0.7),
+                                           ),
 
-                                        ),
+                                         ),
+                                         Align(
+                                           alignment: Alignment.topLeft,
+                                           child: Text(ProductRegistrations?[index].price!=null?ProductRegistrations![index].price:"",
+                                               style: TextStyle(
+                                                 fontSize:30 * MediaQuery.textScaleFactorOf(context),
+                                                 fontWeight: FontWeight.w700,
+                                                 color: Colors.grey,
+                                               ),
+                                               textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
+                                         ),
 
-                                      ),
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(ProductRegistrations?[index].price!=null?ProductRegistrations![index].price:"",
-                                            style: TextStyle(
-                                              fontSize:30 * MediaQuery.textScaleFactorOf(context),
-                                              fontWeight: FontWeight.w700,
-                                              color: Colors.grey,
-                                            ),
-                                            textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
-                                      ),
-
-                                    ],
-                                  ),
-                                ),
+                                       ],
+                                     ),
+                                   ),
+                                 ],
+                               ),
                                 widget.ide==null?
                                Row(
                                  children: [
-                                   SizedBox(width:MediaQuery.of(context).size.width*0.05,),
-
                                    InkWell(
-                                     onTap:() {
-                                       // Navigator.push(
-                                       //   context,
-                                       //   MaterialPageRoute(builder: (context) => add_to_card(product: _product[index])),
-                                       // );
+                                     onTap:() async {
+                                       var Postid=[];
+                                       QuerySnapshot<Map<String, dynamic>>  users =
+                                       await FirebaseFirestore.instance.collection("ProductRegistration")
+                                           .get();
+                                       for (var snapshot in users.docs) {
+                                         // documentID = snapshot.id;
+                                         Postid.add(snapshot.id);
+                                       }
+                                       Navigator.push(
+                                         context,
+                                         MaterialPageRoute(builder: (context) => add_to_card(ProductRegistrations: ProductRegistrations![index],ProductRegistrationsNewArrival: widget.ProductRegistrations
+                                           ,id: Postid[index],)),
+                                       );
 
                                      },
                                      child: Container(
@@ -275,39 +291,30 @@ class _showAllProductSellerState extends State<showAllProductSeller> {
                                      ),
                                    ),
                                    SizedBox(width:MediaQuery.of(context).size.width*0.01,),
-
-                                   InkWell(
-                                     onTap:() async {
-                                       //   print(index);
-                                       // updated(index,context);
-
-                                     },
-                                     child: Container(
-                                       decoration: BoxDecoration(
-                                         color: Colors.black,
-                                         borderRadius: BorderRadius.circular(12),
-                                         //   border: Border.all(color: Colors.blue)
-                                       ),
-                                       child: Center(
-                                         child: Padding(
-                                           padding: const EdgeInsets.all(2.0),
-                                           child: Icon(Icons.edit,color: Colors.white,),
-
-                                         ),
-                                       ),
-                                     ),
-                                   ),
-                                   SizedBox(width:MediaQuery.of(context).size.width*0.01,),
+                                   progreess==true&&index==inde? Container(
+                                       width:12,
+                                       height:12,
+                                       child: CircularProgressIndicator(
+                                         strokeWidth: 2.0,
+                                       )):
 
                                    InkWell (
-                                     onTap:() {
+                                     onTap:() async {
+                                       List<String> PostId=[];
                                        setState(() {
-                                         // deleted(index);
-                                         Navigator.push(
-                                           context,
-                                           MaterialPageRoute(builder: (context) => dashboard_screen()),
-                                         );
-
+                                         progreess=true;
+                                         inde=index;
+                                       });
+                                       var data = await FirebaseFirestore.instance.collection("ProductRegistration")
+                                           .get();
+                                       for (var snapshot in data.docs) {
+                                         PostId.add(snapshot.id);
+                                       }
+                                       authanication().whishList(PostId[index]);
+                                       Future.delayed(Duration(milliseconds: 700), () {
+                                         setState(() {
+                                           progreess=false;
+                                         });// Close the snack bar after 3 seconds
                                        });
                                      },
                                      child: Container(
@@ -319,14 +326,15 @@ class _showAllProductSellerState extends State<showAllProductSeller> {
                                        child: Center(
                                          child: Padding(
                                            padding: const EdgeInsets.all(2.0),
-                                           child: Icon(Icons.delete,color: Colors.white,),
+                                           child: Icon(Icons.add_shopping_cart,color: Colors.white,),
 
                                          ),
                                        ),
                                      ),
                                    ),
                                  ],
-                               ):SizedBox()
+                               )
+                                    :SizedBox()
                               ],
                             ),
                             SizedBox(height:MediaQuery.of(context).size.height*0.01,),

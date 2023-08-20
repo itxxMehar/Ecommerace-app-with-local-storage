@@ -317,7 +317,7 @@ class _main_dashboardState extends State<main_dashboard> {
                             onTap: (){
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => showAllProductSeller(ProductRegistrations:ProductRegistrationsNewArrival,ide: 0,)),
+                                MaterialPageRoute(builder: (context) => showAllProductSeller(ProductRegistrations:ProductRegistrationsNewArrival,)),
                               );
                             },
                             child: Padding(
@@ -338,7 +338,7 @@ class _main_dashboardState extends State<main_dashboard> {
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height/90,),
                  Container(
-                  height: MediaQuery.of(context).size.height/3.7,
+                  height: MediaQuery.of(context).size.height/3.6,
                   width:MediaQuery.of(context).size.width/1.1,
                   // color: Colors.black,
                   child: ListView.builder(
@@ -459,37 +459,41 @@ class _main_dashboardState extends State<main_dashboard> {
 
                       SizedBox(height: MediaQuery.of(context).size.height/90,),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(left: 20),
-                            child: Text('Best Sallers',
+                            child: Text('Product',
                               style: TextStyle(
                                 fontSize: 40 * MediaQuery.textScaleFactorOf(context),
                                 fontWeight: FontWeight.w700,
                               ),
                               textScaleFactor: SizeConfig.textScaleFactor(context,0.7),),
                           ),
-                          SizedBox(width:MediaQuery.of(context).size.width/2.3,),
-                          InkWell(
-                              onTap: (){
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => showAllProductSeller(ProductRegistrations:ProductRegistrationsNewArrival,ide: 0,)),
-                                );
-                              },
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 20),
-                              child: Text('Show all',
-                                style: TextStyle(
-                                  fontSize: 30 * MediaQuery.textScaleFactorOf(context),
-                                  fontWeight: FontWeight.w700,
-                                ),
-                                textScaleFactor: SizeConfig.textScaleFactor(context,0.7),),
-                            ),
-                          ),
-                          Icon(
-                            Icons.navigate_next,
-                            size: 22 * MediaQuery.textScaleFactorOf(context),),
+                         Row(
+                           children: [
+                             InkWell(
+                               onTap: (){
+                                 Navigator.push(
+                                   context,
+                                   MaterialPageRoute(builder: (context) => showAllProductSeller(ProductRegistrations:ProductRegistrationsNewArrival)),
+                                 );
+                               },
+                               child: Padding(
+                                 padding: const EdgeInsets.only(left: 20),
+                                 child: Text('Show all',
+                                   style: TextStyle(
+                                     fontSize: 30 * MediaQuery.textScaleFactorOf(context),
+                                     fontWeight: FontWeight.w700,
+                                   ),
+                                   textScaleFactor: SizeConfig.textScaleFactor(context,0.7),),
+                               ),
+                             ),
+                             Icon(
+                               Icons.navigate_next,
+                               size: 22 * MediaQuery.textScaleFactorOf(context),),
+                           ],
+                         )
                         ],
                       ),
                       SizedBox(height: MediaQuery.of(context).size.height*0.01,),

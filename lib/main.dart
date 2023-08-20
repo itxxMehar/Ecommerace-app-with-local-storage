@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:tapnbuy/screens/seller/dashboard_screen.dart';
 import 'package:tapnbuy/slider.dart';
 import 'package:tapnbuy/splash.dart';
-Future main() async{
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
   );
@@ -20,12 +20,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final currentUser=FirebaseAuth.instance;
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(

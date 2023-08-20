@@ -233,7 +233,7 @@ _filterData( String query) async {
               ),
               SizedBox(height:MediaQuery.of(context).size.height*0.02,),
               Container(
-                  height: MediaQuery.of(context).size.height/3.7,
+                  height: MediaQuery.of(context).size.height/3.3,
                   width:MediaQuery.of(context).size.width/1.1,
                   // color: Colors.black,
                   child: ListView.builder(
@@ -241,20 +241,19 @@ _filterData( String query) async {
                       itemCount: ProductRegistrationslatest.length,
                       itemBuilder: (BuildContext context, int index) {
                         return InkWell(
-                          onTap: (){
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) => dashboard_screen()),
-                            // );
-                            setState(() {
-                              a=index;
-                            });
-                          },
+                          // onTap: (){
+                          //   // Navigator.push(
+                          //   //   context,
+                          //   //   MaterialPageRoute(builder: (context) => dashboard_screen()),
+                          //   // );
+                          //   setState(() {
+                          //     a=index;
+                          //   });
+                          // },
                           child: Container(
                             // color:a==index? Colors.red[100] : Colors.white,
                             width:MediaQuery.of(context).size.width/2.7,
                             child: Column(
-
                               children: [
                                 Row(
                                   children: [
@@ -285,6 +284,7 @@ _filterData( String query) async {
                                   child: Column(
 
                                     children: [
+                                      SizedBox(height: 4,),
                                       Align(
                                         alignment: Alignment.topLeft,
                                         child: Padding(
@@ -319,6 +319,7 @@ _filterData( String query) async {
               ),
               SizedBox(height:MediaQuery.of(context).size.height*0.01,),
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 20),
@@ -329,27 +330,30 @@ _filterData( String query) async {
                         ),
                         textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
                   ),
-                  SizedBox(width:MediaQuery.of(context).size.width*0.37,),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: InkWell(
-                      onTap: (){
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => showAllProductSeller(ProductRegistrations:ProductRegistrationsaLL,ide: 0,)),
-                        );
-                      },
-                      child: Text('Show all',
-                          style: TextStyle(
-                            fontSize:30 * MediaQuery.textScaleFactorOf(context),
-                            fontWeight: FontWeight.w700,
-                          ),
-                          textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
-                    ),
-                  ),
-                  Icon(
-                    Icons.navigate_next,
-                    size:23 * MediaQuery.textScaleFactorOf(context),),
+                 Row(
+                   children: [
+                     Padding(
+                       padding: const EdgeInsets.only(left: 20),
+                       child: InkWell(
+                         onTap: (){
+                           Navigator.push(
+                             context,
+                             MaterialPageRoute(builder: (context) => showAllProductSeller(ProductRegistrations:ProductRegistrationsaLL,)),
+                           );
+                         },
+                         child: Text('Show all',
+                             style: TextStyle(
+                               fontSize:30 * MediaQuery.textScaleFactorOf(context),
+                               fontWeight: FontWeight.w700,
+                             ),
+                             textScaleFactor: SizeConfig.textScaleFactor(context,0.7)),
+                       ),
+                     ),
+                     Icon(
+                       Icons.navigate_next,
+                       size:23 * MediaQuery.textScaleFactorOf(context),),
+                   ],
+                 )
                 ],
               ),
               SizedBox(height:MediaQuery.of(context).size.height*0.03,),
@@ -382,7 +386,9 @@ _filterData( String query) async {
                                       children: [
                                         Align(
                                           alignment: Alignment.topLeft,
-                                          child: Text('${ProductRegistrationsaLL[index].productname}',
+                                          child: Text('${ProductRegistrationsaLL[index].productname.characters.length>12?
+                                            ProductRegistrationsaLL[index].productname.substring(0,11):
+                                          ProductRegistrationsaLL[index].productname}',
                                             style: TextStyle(
                                               fontSize:35 * MediaQuery.textScaleFactorOf(context),
                                               fontWeight: FontWeight.w700,

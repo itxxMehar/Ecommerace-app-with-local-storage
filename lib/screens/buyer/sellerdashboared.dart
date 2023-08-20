@@ -349,7 +349,13 @@ class _sellerDashboaredState extends State<sellerDashboared> {
                                             alignment: Alignment.topLeft,
                                             child: Padding(
                                               padding: const EdgeInsets.only(left: 1.0),
-                                              child: Text(ProductRegistrations[index].productname!=null?ProductRegistrations[index].productname:"",
+                                              child: Text(
+                                                  '${
+                                                      ProductRegistrations[index].productname!=null&&
+                                                      ProductRegistrations[index].productname.characters.length>12?
+                                                  ProductRegistrations[index].productname.substring(0,11):
+                                                      ProductRegistrations[index].productname!=null?
+                                                  ProductRegistrations[index].productname:""}',
                                                   style: TextStyle(
                                                     fontSize:35 * MediaQuery.textScaleFactorOf(context),
                                                     fontWeight: FontWeight.w700,
@@ -452,7 +458,12 @@ class _sellerDashboaredState extends State<sellerDashboared> {
                                             children: [
                                               Align(
                                                 alignment: Alignment.topLeft,
-                                                child: Text(ProductRegistrationsaLL[index].productname!=null?ProductRegistrationsaLL[index].productname:"",
+                                                child: Text('${
+                                ProductRegistrations[index].productname!=null&&
+                                ProductRegistrations[index].productname.characters.length>12?
+                                ProductRegistrations[index].productname.substring(0,11):
+                                ProductRegistrations[index].productname!=null?
+                                ProductRegistrations[index].productname:""}',
                                                   style: TextStyle(
                                                     fontSize:35 * MediaQuery.textScaleFactorOf(context),
                                                     fontWeight: FontWeight.w700,
